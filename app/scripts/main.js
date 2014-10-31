@@ -22,13 +22,16 @@
         };
         var _blocksToolbar = [{
             'value': 30,
-            'color': '#e3ecb0'
+            'color': 'rgba(235, 247, 71, 0.63)',
+            'droppedColor': 'rgba(232, 249, 8, 1)'
         }, {
             'value': 60,
-            'color': '#e3ecb0'
+            'color': 'rgba(235, 247, 71, 0.63)',
+            'droppedColor': 'rgba(232, 249, 8, 1)'
         }, {
             'value': 120,
-            'color  ': '#e3ecb0'
+            'color': 'rgba(235, 247, 71, 0.63)',
+            'droppedColor': 'rgba(232, 249, 8, 1)'
         }];
 
         var _options = {
@@ -59,7 +62,6 @@
             $('#' + parentId).append('<div id="steps_' + parentId + '" class="steps"></div>');
             var eSteps = $('#steps_' + parentId);
             var nSteps = (_options.max - _options.min) / _options.step;
-            console.log(nSteps);
             var stepWidth = 96 / nSteps;
             for (var i = 0; nSteps > i; i++) {
                 var stepValue = _options.min + (i * _options.step);
@@ -127,6 +129,7 @@
                     'id': 'block' + blocksArray[i].value,
                     'class': 'draggable-block template',
                     'data-value': blocksArray[i].value,
+                    'data-dropped-color': blocksArray[i].droppedColor,
                     'html': '<span> <i class = "fa fa-arrows handle" >+</i></span>',
                     'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth + '%; background: ' + blocksArray[i].color,
                 }).appendTo(eBlocks);
@@ -182,7 +185,7 @@
                         div.draggable.effect('shake', {}, 300);
                         return;
                     }
-                    _addBlock(bSteps, div.draggable.attr('data-value'));
+                    _addBlock(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-dropped-color'));
                 }
             });
         };
@@ -231,12 +234,14 @@
         }
 
 
-        function _addBlock(bSteps, value) {
+        function _addBlock(bSteps, value, color) {
 
             for (var i = 0; i < bSteps.length; i++) {
                 bSteps[i].removeClass('empty');
                 bSteps[i].addClass('planned-block-body');
                 bSteps[i].addClass('planned-block-' + bSteps[0].attr('id'));
+                bSteps[i].css("background", color);
+
                 if (i === 0) {
                     bSteps[i].addClass('planned-block-start');
                     bSteps[i].find('div').prepend('<span class="closer" onclick="' + parentId + '.removeBlock(\'' + bSteps[0].attr('id') + '\')"><i class="fa fa-times">x</i></span>');
@@ -309,7 +314,6 @@
          */
         this.getBlocks = function () {
             var blocks = [];
-
             return blocks;
         };
 
@@ -323,10 +327,8 @@
             _build();
             _openBlocks();
             _createDroppable();
-
             return this;
         };
-
         _init();
     };
 

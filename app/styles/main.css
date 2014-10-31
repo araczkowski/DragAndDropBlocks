@@ -11,7 +11,7 @@
 }
 .step {
     float: left;
-    background-color: #43838c;
+    background-color: #e9f4f8;
     height: 60px;
     border: 1px solid #43838c;
     -webkit-box-sizing: border-box;
@@ -19,7 +19,6 @@
     box-sizing: border-box;
 }
 .step_content {
-    background-color: #e9f4f8;
     height: 100%;
 }
 .tick {
@@ -42,8 +41,8 @@ div.template {
     float: left;
 }
 div.draggable-block {
-    background: #e3ecb0; //IE8
-    background: rgba(204, 232, 119, 0.3);
+    background: #EEFAA8; //IE8
+    background: rgba(238, 250, 168, 0.81);
     height: 60px;
     font-size: 14px;
     border: 1px solid #43838c;
@@ -56,7 +55,7 @@ div.draggable-block {
     border: 0px;
 }
 .empty .step_content {
-    background: #eee;
+    background:#E7FCE1;
     border: 1px dashed #999;
 }
 .planned-block-body .step_content {
@@ -116,4 +115,7 @@ div.draggable-block .handle {
     font-style: italic;
     margin: 20px;
     width: 300px;
+}
+div.step_switch {
+    float: right;
 }

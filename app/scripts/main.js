@@ -1,148 +1,70 @@
+'use strict';
+
 (function (w, $) {
-    $.widget('ui.mrs', $.ui.slider, {
-        _create: function () {
-            this._super();
-        },
-        _mouseCapture: function (event) {
-            if ($(event.target).is('a.ui-slider-handle')) {
-                this._lastChangedValue = $(event.target.parentNode).find('.ui-slider-handle').index(event.target);
-            }
-            return this._super(event);
-        }
-    });
 
     /**
      * @class Mrs
      *
      * @constructor
-     * @param {String} elementId, this id will be used to create jQuery selector
+     * @param {String} parentId, this id will be used to create jQuery selector and apped a module code to this id
      * @param {Object} userOptions (optional) Custom options object that overrides default
      * {
      *      @property {Number} userOptions.min Slider minimum value
      *      @property {Number} userOptions.max Slider maximum value
      *      @property {Number} userOptions.step Slider sliding step
-     *      @property {Number} userOptions.gap Minimum gap between handles when add/remove range controls are visible
-     *      @property {Number} userOptions.newlength Default length for newly created range. Will be adjusted between surrounding handles if not fitted
-     *      @property {Object} userOptions.handleLabelDispFormat mrs handle label format default hh24:mi
      *      @property {Object} userOptions.stepLabelDispFormat mrs step Label format default hh24
      * }
      */
-    w.Mrs = function (elementId, userOptions) {
-        //var _self = this;
-        var _slider;
+    w.Dadb = function (parentId, userOptions) {
+        var _stepLabelDispFormat = function (steps) {
+            var hours = Math.floor(Math.abs(steps) / 60);
+            return Math.abs(steps) % 60 === 0 ? ((hours < 10 && hours >= 0) ? '0' : '') + hours : '';
+        };
+        var _blocksToolbar = [{
+            'value': 30,
+            'color': '#e3ecb0'
+        }, {
+            'value': 60,
+            'color': '#e3ecb0'
+        }, {
+            'value': 120,
+            'color  ': '#e3ecb0'
+        }];
+
         var _options = {
             min: 0,
             max: 1440,
             step: 30,
-            gap: 150,
-            newlength: 90,
-            handleLabelDispFormat: function (steps) {
-                var hours = Math.floor(Math.abs(steps) / 60);
-                var minutes = Math.abs(steps) % 60;
-                return ((hours < 10 && hours >= 0) ? '0' : '') + hours + ':' + ((minutes < 10 && minutes >= 0) ? '0' : '') + minutes;
-            },
-            stepLabelDispFormat: function (steps) {
-                var hours = Math.floor(Math.abs(steps) / 60);
-                return Math.abs(steps) % 60 === 0 ? ((hours < 10 && hours >= 0) ? '0' : '') + hours : '';
-            }
-        };
-        var _deletePeriodConfirm = null,
-            _addPeriodConfirm = null,
-            _onHandleMouseenter = null,
-            _onHandleSlide = null,
-            _onAddPeriod = null,
-            _onDeletePeriod = null;
-
-        var SELECTORS = {
-            range: {
-                'class': 'ui-slider-range'
-            },
-            handle: {
-                'class': 'ui-slider-handle'
-            },
-            control: {
-                'class': 'ui-slider-control'
-            }
-        };
-        var _periods = [];
-        var _periodIdIncrementor = 0;
-
-        var Period = function (start, end) {
-            var _self = this,
-                _id,
-                _abscissas,
-                _indexes;
-
-            function _init() {
-                if (start >= end) {
-                    throw 'Invalid arguments passed';
-                }
-                _id = ++_periodIdIncrementor;
-                _abscissas = [start, end];
-            }
-
-            this.setIndexes = function (i) {
-                _indexes = [i[0], i[1]];
-            };
-
-            this.getIndexes = function () {
-                return [_indexes[0], _indexes[1]];
-            };
-
-            this.getId = function () {
-                return _id;
-            };
-
-            this.setAbscissas = function (a) {
-                _abscissas = [a[0], a[1]];
-            };
-
-            this.getAbscissas = function () {
-                return [_abscissas[0], _abscissas[1]];
-            };
-
-            this.toPublic = function () {
-                return {
-                    getId: function () {
-                        return _id;
-                    },
-                    getAbscissas: function () {
-                        return _self.getAbscissas();
-                    }
-                };
-            };
-
-            _init();
+            stepLabelDispFormat: _stepLabelDispFormat,
+            toolbarId: 'blocksToolbar',
+            blocksToolbar: _blocksToolbar,
+            openBlocks: [[30, 60], [600, 90]]
         };
 
-        var Utils = {
-            convertToPercent: function (value) {
-                return (value / (_options.max - _options.min)) * 100;
-            }
-        };
 
         function _init() {
+
             _mergeOptions();
             if ((_options.max - _options.min) % _options.step !== 0) {
-                throw 'Slider length should be multiple to step';
+                throw 'Blocks length should be multiple to step';
             }
-            _slider = $('#' + elementId);
-            _initEvents();
             _build();
-            _addScale();
+            _createBlocksToolbar();
+            _openBlocks();
         }
 
 
-        function _addScale() {
-            $('#steps_' + elementId).remove();
-            $('#' + elementId).parent().prepend('<div id="steps_' + elementId + '" class="steps"></div>');
-            var eSteps = $('#steps_' + elementId);
+        function _build() {
+            $('#steps_' + parentId).remove();
+            $('#' + parentId).append('<div id="steps_' + parentId + '" class="steps"></div>');
+            var eSteps = $('#steps_' + parentId);
             var nSteps = (_options.max - _options.min) / _options.step;
+            console.log(nSteps);
             var stepWidth = 96 / nSteps;
             for (var i = 0; nSteps > i; i++) {
                 var stepValue = _options.min + (i * _options.step);
                 $('<div/>', {
-                    'id': 'step_' + elementId + '_' + (Number(i) + 1),
+                    'id': 'step_' + parentId + '_' + (Number(i) + 1),
                     'class': 'step',
                     'style': 'width:' + stepWidth + '%',
                     'data-start': stepValue,
@@ -150,82 +72,15 @@
                 }).appendTo(eSteps);
             }
             //
-            $('#' + elementId).width(nSteps * stepWidth + '%');
-        }
-
-
-        function _initEvents() {
-
-            _options.slide = function (event, ui) {
-                // check the minimum gap
-                for (var i = 0; i < _periods.length; i++) {
-                    var e = _periods[i].getAbscissas();
-                    //
-                    if (ui.value === e[0] || ui.value === e[1]) {
-                        return false;
-                    }
-                    //TODO the is a problem when we slide with a mouse...
-                    /*if (ui.value > e[0] && ui.value < e[1]) {
-                        return false;
-                    }*/
-                }
-
-                var index = _slider.find('.' + SELECTORS.handle['class']).index(ui.handle);
-
-                function onSlide() {
-                    if (typeof (_onHandleSlide) === 'function') {
-                        var key = _getPeriodKeyByIndex(index);
-                        if (key !== -1) {
-                            var edgeIndex = _isLeftHandle(index) ? 0 : 1;
-                            _onHandleSlide($(ui.handle), _periods[key].toPublic(), edgeIndex);
-                        }
-                    }
-                    return true;
-                }
-
-                if (!_validHandle(index, ui.value)) {
-                    if (_isLeftHandle(index) && _isThereNextLeftHandle(index)) {
-                        if (_validHandle(index - 1, ui.value)) {
-                            _updateHandles([[index, ui.value], [index - 1, ui.value]]);
-                            return onSlide();
-                        }
-                    }
-                    if (_isRightHandle(index) && _isThereNextRightHandle(index)) {
-                        if (_validHandle(index + 1, ui.value)) {
-                            _updateHandles([[index, ui.value], [index + 1, ui.value]]);
-                            return onSlide();
-                        }
-                    }
-                    return false;
-                }
-                _updateHandle(index, ui.value);
-                return onSlide();
-            };
-
-            _slider.on('mouseenter', '.' + SELECTORS.handle['class'], function () {
-                if (typeof (_onHandleMouseenter) === 'function') {
-                    var index = _slider.find('.' + SELECTORS.handle['class']).index($(this));
-                    var key = _getPeriodKeyByIndex(index);
-                    if (key !== -1) {
-                        var edgeIndex = _isLeftHandle(index) ? 0 : 1;
-                        _onHandleMouseenter($(this), _periods[key].toPublic(), edgeIndex);
-                    }
-                }
-            });
+            $('#steps_' + parentId).width(nSteps * stepWidth + '%');
         }
 
         function _mergeOptions() {
-            var fn;
-
-            if (_options.mode === 'blocks') {
-                _options.disabled = true;
-            } else {
-                _options.disabled = false;
-            }
-
-
             if (!userOptions) {
                 return _options;
+            }
+            if (typeof (userOptions) === 'string') {
+                userOptions = JSON.parse(userOptions);
             }
 
 
@@ -235,20 +90,14 @@
                 }
             }
 
-            if (typeof (userOptions.handleLabelDispFormat) !== 'undefined') {
-                if (typeof (userOptions.handleLabelDispFormat) === 'string') {
-                    eval('var fn = ' + userOptions.handleLabelDispFormat);
-                    userOptions.handleLabelDispFormat = fn;
-                }
-            }
-
             if (typeof (userOptions.stepLabelDispFormat) !== 'undefined') {
                 if (typeof (userOptions.stepLabelDispFormat) === 'string') {
+                    /* jshint ignore:start */
                     eval('var fn = ' + userOptions.stepLabelDispFormat);
                     userOptions.stepLabelDispFormat = fn;
+                    /* jshint ignore:end */
                 }
             }
-
             for (var optionKey in _options) {
                 if (optionKey in userOptions) {
                     switch (typeof _options[optionKey]) {
@@ -269,412 +118,199 @@
             return _options;
         }
 
-        function _toggleHandles(flag) {
-            _slider.find('.' + SELECTORS.handle['class']).toggle(!!flag);
+        function _addBlocksToTolbar(selector, blocksArray) {
+            var eBlocks = $(selector);
+            var allSteps = (_options.max - _options.min) / _options.step;
+            var stepWidth = 96 / allSteps;
+            for (var i = 0; i < blocksArray.length; i++) {
+                $('<div/>', {
+                    'id': 'block' + blocksArray[i].value,
+                    'class': 'draggable-block template',
+                    'data-value': blocksArray[i].value,
+                    'html': '<span> <i class = "fa fa-arrows handle" >+</i></span>',
+                    'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth + '%; background: ' + blocksArray[i].color,
+                }).appendTo(eBlocks);
+            }
+            return this;
         }
 
-        function _isLeftHandle(index) {
-            return index % 2 === 0;
+        function _createBlocksToolbar() {
+            if ($('#' + _options.toolbarId).length === 0) {
+
+                $('#' + parentId).parent().append('<div id="' + _options.toolbarId + '" class="source"></div>');
+            }
+
+            _addBlocksToTolbar('#' + _options.toolbarId, _options.blocksToolbar);
+
+            _createDroppable();
+            _createDraggable();
         }
 
-        function _isRightHandle(index) {
-            return index % 2 !== 0;
-        }
+        function _createDroppable() {
+            // Droppabe
+            $('.steps .step').droppable({
+                tolerance: 'pointer',
+                revert: true,
+                //hoverClass: 'highlight',
+                over: function (event, div) {
+                    var className;
+                    //
+                    $('div.step').removeClass('highlightNOK');
+                    $('div.step').removeClass('highlightOK');
 
-        function _isThereNextLeftHandle(index) {
-            var values = _slider.mrs('option', 'values');
-            if (index in values && values[index - 1] !== undefined) {
-                return true;
-            }
-            return false;
-        }
 
-        function _isThereNextRightHandle(index) {
-            var values = _slider.mrs('option', 'values');
-            if (index in values && values[index + 1] !== undefined) {
-                return true;
-            }
-            return false;
-        }
+                    var nSteps = (div.draggable.attr('data-value') / _options.step);
+                    var list = _getHoveredDivs($(this), div, 'step', nSteps);
+                    var list2 = _getHoveredDivs($(this), div, 'empty', nSteps);
 
-        function _getPeriodKey(periodId) {
-            for (var i = 0; i < _periods.length; i++) {
-                if (_periods[i] && _periods[i].getId() === periodId) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        function _getPeriodKeyByIndex(index) {
-            for (var i = 0; i < _periods.length; i++) {
-                if (_periods[i].getIndexes().indexOf(index) !== -1) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        function _getPeriodKeyByInnerPoint(abscissa) {
-            for (var i = 0; i < _periods.length; i++) {
-                var edges = _periods[i].getAbscissas();
-                if (abscissa >= edges[0] && abscissa <= edges[1]) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        function _rangeIntersectsPeriods(start, length) {
-            try {
-                var midpoint = start + length / 2;
-                var surrounding = _getSurroundingPoints(midpoint);
-                if (start < surrounding[0] || (start + length) > surrounding[1]) {
-                    return true;
-                }
-            } catch (e) {
-                // the middle point is within a period
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * Gets surrounding handles abscissas for the outranged point
-         * @param {Number} abscissa - point out of any range
-         * @throws {String} message in case the point is within a range
-         * @return {Array[Number, Number]}
-         */
-        function _getSurroundingPoints(abscissa) {
-            if (_getPeriodKeyByInnerPoint(abscissa) !== -1) {
-                throw 'Passed abscissa is within the period';
-            }
-            var leftPoint = _options.min;
-            var rightPoint = _options.max;
-            for (var i = 0; i < _periods.length; i++) {
-                var edges = _periods[i].getAbscissas();
-                if (abscissa > edges[1]) {
-                    leftPoint = edges[1];
-                }
-                if (abscissa < edges[0] && rightPoint === _options.max) {
-                    rightPoint = edges[0];
-                }
-            }
-            return [leftPoint, rightPoint];
-        }
-
-        function _isValidParams(start, length) {
-            if (start < _options.min || start >= _options.max || length < _options.step) {
-                return false;
-            }
-            return true;
-        }
-
-        function _deletePeriod(periodId) {
-            var i = _getPeriodKey(periodId);
-            if (i !== -1) {
-
-                var ret = !!_periods.splice(i, 1).length;
-
-                if (typeof (_onDeletePeriod) === 'function') {
-                    _onDeletePeriod();
-                }
-                return ret;
-            }
-            return false;
-        }
-
-        function _sanitizeValue(value) {
-            value = Math.round(Math.abs(value));
-            value = value - value % _options.step;
-            return value;
-        }
-
-        function _addPeriod(start, length) {
-            start = _sanitizeValue(start);
-            length = _sanitizeValue(length);
-            if (!_isValidParams(start, length)) {
-                return null;
-            }
-            var midpoint = start + length / 2;
-            if (_getPeriodKeyByInnerPoint(midpoint) !== -1) {
-                return null;
-            }
-            if (_rangeIntersectsPeriods(start, length)) {
-                var nearest = _getSurroundingPoints(midpoint);
-                var shorter = ((nearest[1] - midpoint) > (midpoint - nearest[0])) ? (midpoint - nearest[0]) : (nearest[1] - midpoint);
-                shorter -= _options.step;
-                start = midpoint - shorter;
-                length = shorter * 2;
-                return _addPeriod(start, length);
-            }
-            try {
-                var period = new Period(start, start + length);
-                _periods.push(period);
-                _periods.sort(function (a, b) {
-                    return a.getAbscissas()[0] - b.getAbscissas()[0];
-                });
-                if (typeof (_onAddPeriod) === 'function') {
-                    _onAddPeriod();
-                }
-                return period;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function _validHandle(index, value) {
-            var values = _slider.mrs('option', 'values');
-            if (index in values) {
-                if (values[index - 1] !== undefined) {
-                    if (value < values[index - 1] || (_isRightHandle(index) && value === values[index - 1])) {
-                        return false;
+                    if (nSteps !== list2.length) {
+                        className = 'highlightNOK';
+                    } else {
+                        className = 'highlightOK';
                     }
-                }
-                if (values[index + 1] !== undefined) {
-                    if (value > values[index + 1] || (_isLeftHandle(index) && value === values[index + 1])) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
 
-        function _updateHandle(index, value) {
-            _updateHandles([[index, value]]);
-        }
-
-        /**
-         * Updates multiple handles at a time
-         * @param {Array} data example: Array([[index, value],[index, value]])
-         */
-        function _updateHandles(data) {
-            for (var i in data) {
-                var index = data[i][0];
-                var value = data[i][1];
-                var key = _getPeriodKeyByIndex(index);
-                if (key !== -1) {
-                    var indexes = _periods[key].getIndexes();
-                    var edges = _periods[key].getAbscissas();
-                    edges[indexes.indexOf(index)] = value;
-                    _periods[key].setAbscissas(edges);
-                }
-            }
-            _build(true);
-        }
-
-        function _drawRange(periodId, edges) {
-            var range = $('<div class="' + SELECTORS.range['class'] + ' ' + SELECTORS.range['class'] + '-' + periodId + '"></div>');
-            _slider.append(range);
-            _alignRange(periodId, edges);
-        }
-
-        function _alignRange(periodId, edges) {
-            var range = _slider.find('.' + SELECTORS.range['class'] + '-' + periodId);
-            range.css({
-                left: (Utils.convertToPercent(edges[0] - _options.min)) + '%',
-                width: Utils.convertToPercent(edges[1] - edges[0]) + '%'
-            });
-        }
-
-        function _destroy() {
-            _slider.mrs('destroy');
-            _slider.find('.' + SELECTORS.range['class']).remove();
-        }
-
-        function _rebuild() {
-            _destroy();
-            _build();
-        }
-
-        function _build(update) {
-            var values = [];
-            for (var i = 0; i < _periods.length; i++) {
-                var edges = _periods[i].getAbscissas();
-                var count = values.push(edges[0], edges[1]);
-                _periods[i].setIndexes([count - 2, count - 1]);
-                if (update) {
-                    _alignRange(_periods[i].getId(), edges);
-                } else {
-                    _drawRange(_periods[i].getId(), edges);
-                }
-            }
-            _options.values = values;
-            _slider.mrs(_options);
-            if (update) {
-                _alignControls();
-            } else {
-                _rebuildControls();
-            }
-            _refreshHandles();
-        }
-
-        function _rebuildControls() {
-            _slider.find('.' + SELECTORS.control['claaddControlss'] + '-plus,.' + SELECTORS.control['class'] + '-minus').remove();
-
-            var addControl = function (type, identifier) {
-                var key;
-                var control = $('<div class="' + SELECTORS.control['class'] + '-' + type + ' ' + SELECTORS.control['class'] + '-' + identifier + '"></div>');
-                control.hide();
-                control.on('mousedown', function (event) {
-                    event.stopPropagation();
-
-                    if (_options.mode === 'blocks') {
+                    list.forEach(function (entry) {
+                        entry.addClass(className);
+                    });
+                },
+                drop: function (ev, div) {
+                    $('div.step').removeClass('highlightNOK');
+                    $('div.step').removeClass('highlightOK');
+                    var nSteps = (div.draggable.attr('data-value') / _options.step);
+                    var bSteps = _getHoveredDivs($(this), div, 'empty', nSteps);
+                    if (bSteps.length !== nSteps) {
+                        div.draggable.effect('shake', {}, 300);
                         return;
                     }
-
-                    if ('minus' === type) {
-                        key = _getPeriodKey(identifier);
-                        if (key !== -1) {
-                            function deletePeriod() {
-                                if (_deletePeriod(identifier)) {
-                                    _rebuild();
-                                }
-                            }
-                            if (typeof (_deletePeriodConfirm) === 'function') {
-                                _deletePeriodConfirm(_periods[key].toPublic(), function (result) {
-                                    if (result) {
-                                        deletePeriod();
-                                    }
-                                });
-                            } else {
-                                deletePeriod();
-                            }
-                        }
-                    } else if ('plus' === type) {
-                        var start,
-                            length = _options.newlength,
-                            leftEdge = _options.min,
-                            rightEdge = _options.max;
-                        if ('base' === identifier) {
-                            key = _getPeriodKeyByIndex(0);
-                            if (key !== -1) {
-                                rightEdge = _periods[key].getAbscissas()[0];
-                            }
-                        } else {
-                            key = _getPeriodKey(identifier);
-                            if (key !== -1) {
-                                var indexes = _periods[key].getIndexes(),
-                                    nextKey = _getPeriodKeyByIndex(indexes[1] + 1);
-                                leftEdge = _periods[key].getAbscissas()[1];
-                                if (nextKey !== -1) {
-                                    rightEdge = _periods[nextKey].getAbscissas()[0];
-                                }
-                            }
-                        }
-                        if ((rightEdge - leftEdge) < length) {
-                            length = rightEdge - leftEdge;
-                        }
-                        start = leftEdge + (rightEdge - leftEdge) / 2 - length / 2;
-                        var newPeriod = _addPeriod(start, length);
-                        if (newPeriod !== null) {
-                            if (typeof (_addPeriodConfirm) === 'function') {
-                                _addPeriodConfirm(newPeriod.toPublic(), function (result) {
-                                    if (!result) {
-                                        _deletePeriod(newPeriod.getId());
-                                    }
-                                    _rebuild();
-                                });
-                            } else {
-                                _rebuild();
-                            }
-                        }
-                    }
-                });
-                _slider.append(control);
-            };
-
-            addControl('plus', 'base');
-            var count = _periods.length;
-            if (count > 0) {
-                for (var i = 0; i < count; i++) {
-                    addControl('minus', _periods[i].getId());
-                    addControl('plus', _periods[i].getId());
+                    _addBlock(bSteps, div.draggable.attr('data-value'));
                 }
-            }
-            _alignControls();
+            });
+        };
+
+        function _createDraggable() {
+            // Draggable
+            $('div.draggable-block').draggable({
+                appendTo: 'body',
+                helper: 'clone',
+                revert: 'invalid',
+                //snap: '.steps .step',
+                handle: 'span i.handle',
+                greedy: true,
+                reverting: function () {
+                    $('div.step').removeClass('highlightNOK');
+                    $('div.step').removeClass('highlightOK');
+                },
+                start: function (ev, div) {
+                    div.helper.width($(this).width());
+                },
+                stop: function (ev, div) {
+                    div.helper.width($(this).width());
+                }
+            });
+
+            //
+            $('div.draggable, .steps .step').disableSelection();
         }
 
-        function _alignControls() {
-            _slider.find('.' + SELECTORS.control['class'] + '-plus,.' + SELECTORS.control['class'] + '-minus').hide();
 
-            var showControl = function (type, identifier, offset) {
-                var control = _slider.find('.' + SELECTORS.control['class'] + '-' + type + '.' + SELECTORS.control['class'] + '-' + identifier);
-                control.css({
-                    left: Utils.convertToPercent(offset) + '%'
-                });
-                control.show();
-            };
-            var prevValue = _options.min;
-            var prevIdentifier = 'base';
-            var count = _periods.length;
-            if (count > 0) {
-                for (var i = 0; i < count; i++) {
-                    var edges = _periods[i].getAbscissas();
-                    var identifier = _periods[i].getId();
-                    if ((edges[0] - prevValue) >= _options.gap) {
-                        showControl('plus', prevIdentifier, (prevValue - _options.min + (edges[0] - prevValue) / 2));
-                    }
-                    //if ((edges[1] - edges[0]) >= _options.gap) {
-                    showControl('minus', identifier, (edges[0] - _options.min + (edges[1] - edges[0]) / 2));
-                    //}
-                    prevValue = edges[1];
-                    prevIdentifier = identifier;
+
+        // to get array with currently hovered divs
+        function _getHoveredDivs(firstElement, blockDiv, className, nSteps) {
+            var hoveredDivs = [];
+            var id = firstElement.attr('id');
+            id = id.substring(id.indexOf('_') + 1);
+            id = id.substring(0, id.indexOf('_'));
+
+            for (var i = 0; i < nSteps; i++) {
+                var step = Number(firstElement.attr('id').replace('step_' + id + '_', '')) + Number(i);
+                if ($('#step_' + id + '_' + step).hasClass(className)) {
+                    hoveredDivs.push($('#step_' + id + '_' + step));
                 }
-                if ((_options.max - prevValue) >= _options.gap) {
-                    showControl('plus', prevIdentifier, (prevValue - _options.min + (_options.max - prevValue) / 2));
-                }
-            } else {
-                showControl('plus', 'base', ((_options.max - _options.min) / 2));
             }
+            return hoveredDivs;
         }
 
-        function _refreshHandles() {
-            var handles = _slider.find('.' + SELECTORS.handle['class']);
-            var values = _slider.mrs('option', 'values');
-            var prevSibling = -1;
 
-            handles.removeClass('arrow-left arrow-right');
-            for (var index in values) {
-                handles.eq(index).html('<span class="handle_label">' + _options.handleLabelDispFormat(values[index]) + '</span>');
-                if (values[index] === prevSibling) {
-                    handles.eq(index - 1).addClass('arrow-left');
-                    handles.eq(index).addClass('arrow-right');
+        function _addBlock(bSteps, value) {
+
+            for (var i = 0; i < bSteps.length; i++) {
+                bSteps[i].removeClass('empty');
+                bSteps[i].addClass('planned-block-body');
+                bSteps[i].addClass('planned-block-' + bSteps[0].attr('id'));
+                if (i === 0) {
+                    bSteps[i].addClass('planned-block-start');
+                    bSteps[i].find('div').prepend('<span class="closer" onclick="' + parentId + '.removeBlock(\'' + bSteps[0].attr('id') + '\')"><i class="fa fa-times">x</i></span>');
+                    bSteps[i].attr('data-value', value);
                 }
-                prevSibling = values[index];
+
+                if (i === bSteps.length - 1) {
+                    bSteps[i].addClass('planned-block-end');
+                }
             }
-            _toggleHandles(values.length);
+
+        }
+
+        // to remove the blocks from slider
+        function _removeBlock(step) {
+            var selector = '.planned-block-' + step;
+            $(selector).removeClass('planned-block-body').removeClass('planned-block-start').removeClass('planned-block-end').addClass('empty');
+            $(selector).find($('.closer')).remove();
+            $(selector).attr('data-value', '');
+        }
+
+        function _getBlocksInRange(start, value) {
+            var blocks = [];
+            var startId = start / _options.step + 1;
+            var blocksNo = value / _options.step;
+
+            for (var n = 0; n < blocksNo; n++) {
+                var step = (Number(startId) + n);
+                blocks.push($('#step_' + parentId + '_' + step));
+            }
+            return blocks;
+        }
+
+        function _openBlocks() {
+            _options.openBlocks.forEach(function (block) {
+                var b = (_getBlocksInRange(block[0], block[1]));
+                for (var i = 0; i < b.length; i++) {
+                    b[i].addClass('empty');
+                }
+            });
+
+
         }
 
         /**
-         * Adds multiple periods and rebuilds the mrs plugin
-         * @param {Array} periodsArray example: Array([[0,20],[40,60]...])
-         * @return {Object} self instance of Mrs class
+         * Adds multiple block to the slider scale
+         * @param {Array} blocksArray example: Array([[0,20],[40,60]...])
+         * @return {Object} self instance of MrDad class
          */
-        this.addPeriods = function (periodsArray) {
-
-            if (typeof (periodsArray) === 'string') {
-                periodsArray = JSON.parse(periodsArray);
+        this.addBlocks = function (blocksArray) {
+            if (typeof (blocksArray) === 'string') {
+                blocksArray = JSON.parse(blocksArray);
             }
-
-            for (var i = 0; i < periodsArray.length; i++) {
-                _addPeriod(periodsArray[i][0], periodsArray[i][1]);
+            var blocksToAdd = [];
+            for (var i = 0; i < blocksArray.length; i++) {
+                blocksToAdd = _getBlocksInRange(blocksArray[i][0], blocksArray[i][1]);
+                _addBlock(blocksToAdd, blocksArray[i][1]);
             }
-            _rebuild();
             return this;
         };
 
+        this.removeBlock = function (step) {
+            _removeBlock(step);
+        };
+
+
         /**
-         * Gets all periods for this mrs instance
-         * @return {Array} of each period.toPublic() object
+         * Gets all blocks for this Dadb instance
+         * @return {Array} of each block.toPublic() object
          */
-        this.getPeriods = function () {
-            var periods = [];
-            for (var i = 0; i < _periods.length; i++) {
-                periods.push(_periods[i].toPublic());
-            }
-            return periods;
+        this.getBlocks = function () {
+            var blocks = [];
+
+            return blocks;
         };
 
         /**
@@ -684,8 +320,10 @@
          */
         this.changeStep = function (step) {
             _options.step = step;
-            _rebuild();
-            _addScale();
+            _build();
+            _openBlocks();
+            _createDroppable();
+
             return this;
         };
 

@@ -18,29 +18,19 @@
 </head>
 
 <body>
-    <div class="code">
-        mrs = new Mrs('slider');
-        <br>mrs.addPeriods('[[660, 90],[990, 120]]')
+    <div id="root_parent" class="content">
+        <div class="code">
+            dadb1 = new Dadb('dadb1');
+            <br>dadb1.addBlocks('[[660, 30],[990, 60]]');
+        </div>
+        <div id="dadb1"></div>
+        <div class="code">
+            dadb2 = new Dadb('dadb2');
+            <br>dadb2.addBlocks('[[660, 30],[990, 60]]');
+        </div>
+        <div id="dadb2"></div>
     </div>
-    <div id="parent" class="content">
-        <div id="slider"></div>
-    </div>
-    <div class="code">
-        mrs2 = new Mrs('slider2');
-        <br>mrs2.addPeriods('[[360, 780]]');
-        <br>mrs2.changeStep(10);
-    </div>
-    <div id="parent2" class="content">
-        <div id="slider2"></div>
-    </div>
-    <div class="code">
-        mrs3 = new Mrs('slider3', { min: 360, max: 1200, step: 15 });
-        <br>mrs3.addPeriods('[[360, 555],[990, 60]]')
-        <br>
-    </div>
-    <div id="parent3" class="content">
-        <div id="slider3"></div>
-    </div>
+
 
     <!-- build:js({app,.tmp}) scripts/vendor.js -->
     <!-- bower:js -->
@@ -52,24 +42,13 @@
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
     <script>
-        var mrs, mrs2;
+        var dadb;
         $(function () {
             // inicialization - test from APEX (string insted of objects)
-            mrs = new Mrs('slider');
-            mrs.addPeriods('[[660, 90],[990, 120]]')
-
-
-            mrs2 = new Mrs('slider2');
-            mrs2.addPeriods('[[360, 780]]');
-            mrs2.changeStep(10);
-
-            mrs3 = new Mrs('slider3', {
-                min: "360",
-                max: "1200",
-                step: "15"
-            });
-            mrs3.addPeriods('[[360, 555],[990, 60]]')
-
+            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":15,"toolbarId":"tolbar1"}');
+            dadb1.addBlocks('[[660, 30],[990, 60]]');
+            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[{"value":30,"color": "#E7B08E"}],"min":360,"max":1170,"step":15,"toolbarId":"tolbar2"}');
+            dadb2.addBlocks('[[660, 30],[990, 60]]');
         });
     </script>
 </body>

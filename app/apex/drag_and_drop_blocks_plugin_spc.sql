@@ -1,4 +1,5 @@
-create or replace package multi_range_slider_plugin is
+create or replace package drag_and_drop_blocks_plugin is
+
 
   function render(p_region              in apex_plugin.t_region,
                   p_plugin              in apex_plugin.t_plugin,
@@ -8,5 +9,6 @@ create or replace package multi_range_slider_plugin is
   -- test
   procedure save_data(p_id varchar2, p_data varchar2);
 
-end multi_range_slider_plugin;
+end drag_and_drop_blocks_plugin;
+
 /

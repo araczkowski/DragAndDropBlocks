@@ -103,7 +103,8 @@
             if (typeof (userOptions.stepLabelDispFormat) !== 'undefined') {
                 if (typeof (userOptions.stepLabelDispFormat) === 'string') {
                     /* jshint ignore:start */
-                    eval('var fn = ' + userOptions.stepLabelDispFormat);
+                    var fn;
+                    eval('fn = ' + userOptions.stepLabelDispFormat);
                     userOptions.stepLabelDispFormat = fn;
                     /* jshint ignore:end */
                 }

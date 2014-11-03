@@ -94,6 +94,12 @@
                 }
             }
 
+            if (typeof (userOptions.openBlocks) !== 'undefined') {
+                if (typeof (userOptions.openBlocks) === 'string') {
+                    userOptions.openBlocks = JSON.parse(userOptions.openBlocks);
+                }
+            }
+
             if (typeof (userOptions.stepLabelDispFormat) !== 'undefined') {
                 if (typeof (userOptions.stepLabelDispFormat) === 'string') {
                     /* jshint ignore:start */

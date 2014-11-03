@@ -5,7 +5,7 @@ Oracle APEX plugin/widget with blocks drag & drop interaction.
 Live example at jsFiddle http://jsfiddle.net/araczkowski/t3vj8wjr/embedded/result/
 
 
-![alt tag](https://raw.githubusercontent.com/araczkowski/MultiRangeSlider/master/app/images/MultiRangeSlider.png)
+![alt tag](https://raw.githubusercontent.com/araczkowski/MultiRangeSlider/master/app/images/dadb.png)
 
 
 TODO

@@ -140,7 +140,7 @@
                     'data-value': blocksArray[i].value,
                     'data-dropped-color': blocksArray[i].droppedColor,
                     'html': '<span> <i class = "fa handle" >+</i></span>',
-                    'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth + '%; background: ' + blocksArray[i].color,
+                    'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * 3 + '%; background: ' + blocksArray[i].color,
                 }).appendTo(eBlocks);
             }
             return;

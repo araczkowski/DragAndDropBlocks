@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>MultiRangeSlider</title>
+    <title>DragAndDropBlocks</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" href="/favicon.ico">
@@ -20,15 +20,23 @@
 <body>
     <div id="root_parent" class="content">
         <div class="code">
-            dadb1 = new Dadb('dadb1');
-            <br>dadb1.addBlocks('[[660, 30],[990, 60]]');
+            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
+            <br>dadb1.addBlocks('[[990, 60,"rgb(232, 249, 8)"]]');
         </div>
         <div id="dadb1"></div>
         <div class="code">
-            dadb2 = new Dadb('dadb2');
-            <br>dadb2.addBlocks('[[660, 30],[990, 60]]');
+            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[],"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,420]]}');
+            <br>dadb2.addBlocks('[[990, 60, "rgb(255, 137, 0)"]]');
         </div>
         <div id="dadb2"></div>
+        <div class="code">
+            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[],"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,420]]}');
+            <br>dadb2.addBlocks('[[990, 60, "rgb(255, 137, 0)"]]');
+        </div>
+        <div id="dadb3"></div>
+        <div class="code">
+            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"},{"value":60,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"},{"value":120,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,750]]}');
+        </div>
         <br>
         <br>
 
@@ -52,13 +60,15 @@
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
     <script>
-        var dadb;
+        var dadb1, dadb2;
         $(function () {
             // inicialization - test from APEX (string insted of objects)
-            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1"}');
-            dadb1.addBlocks('[[660, 30],[990, 60]]');
-            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[{"value":30,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar1"}');
-            dadb2.addBlocks('[[660, 30],[990, 60]]');
+            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
+            dadb1.addBlocks('[[990, 60,"rgb(232, 249, 8)"]]');
+            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[],"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,420]]}');
+            dadb2.addBlocks('[[990, 60, "rgb(255, 137, 0)"]]');
+
+            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"},{"value":60,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"},{"value":120,"color": "rgba(250, 161, 106, 0.72)","droppedColor":"rgba(255, 137, 0, 1)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,750]]}');
 
             $('#step_checkbox').change(function () {
                 if ($(this).is(":checked")) {

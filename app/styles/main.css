@@ -116,7 +116,7 @@ div.draggable-block .handle {
     color: #998;
     font-style: italic;
     margin: 20px;
-    width: 300px;
+    width: 90%;
 }
 div.step_switch {
     float: right;

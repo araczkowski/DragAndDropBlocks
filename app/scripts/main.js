@@ -46,7 +46,6 @@
 
 
         function _init() {
-
             _mergeOptions();
             if ((_options.max - _options.min) % _options.step !== 0) {
                 throw 'Blocks length should be multiple to step';
@@ -130,11 +129,11 @@
                     'class': 'draggable-block template',
                     'data-value': blocksArray[i].value,
                     'data-dropped-color': blocksArray[i].droppedColor,
-                    'html': '<span> <i class = "fa fa-arrows handle" >+</i></span>',
+                    'html': '<span> <i class = "fa handle" >+</i></span>',
                     'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth + '%; background: ' + blocksArray[i].color,
                 }).appendTo(eBlocks);
             }
-            return this;
+            return;
         }
 
         function _createBlocksToolbar() {
@@ -188,7 +187,7 @@
                     _addBlock(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-dropped-color'));
                 }
             });
-        };
+        }
 
         function _createDraggable() {
             // Draggable
@@ -240,11 +239,12 @@
                 bSteps[i].removeClass('empty');
                 bSteps[i].addClass('planned-block-body');
                 bSteps[i].addClass('planned-block-' + bSteps[0].attr('id'));
-                bSteps[i].css("background", color);
+                bSteps[i].attr('data-color', color);
+                bSteps[i].css('background', color);
 
                 if (i === 0) {
                     bSteps[i].addClass('planned-block-start');
-                    bSteps[i].find('div').prepend('<span class="closer" onclick="' + parentId + '.removeBlock(\'' + bSteps[0].attr('id') + '\')"><i class="fa fa-times">x</i></span>');
+                    bSteps[i].find('div').prepend('<span class="closer" onclick="' + parentId + '.removeBlock(\'' + bSteps[0].attr('id') + '\')"><i class="fa">x</i></span>');
                     bSteps[i].attr('data-value', value);
                 }
 
@@ -265,7 +265,7 @@
 
         function _getBlocksInRange(start, value) {
             var blocks = [];
-            var startId = start / _options.step + 1;
+            var startId = Number(start / _options.step) - Number(_options.min / _options.step) + 1;
             var blocksNo = value / _options.step;
 
             for (var n = 0; n < blocksNo; n++) {
@@ -298,7 +298,7 @@
             var blocksToAdd = [];
             for (var i = 0; i < blocksArray.length; i++) {
                 blocksToAdd = _getBlocksInRange(blocksArray[i][0], blocksArray[i][1]);
-                _addBlock(blocksToAdd, blocksArray[i][1]);
+                _addBlock(blocksToAdd, blocksArray[i][1], blocksArray[i][2]);
             }
             return this;
         };
@@ -310,10 +310,21 @@
 
         /**
          * Gets all blocks for this Dadb instance
-         * @return {Array} of each block.toPublic() object
+         * @return {Array} of blocks
          */
         this.getBlocks = function () {
             var blocks = [];
+            var _blocks = $('div#' + parentId + ' .planned-block-start');
+            if (_blocks.length > 0) {
+                _blocks.each(function (i, e) {
+                    var block = {};
+                    block.id = e.getAttribute('id');
+                    block.start = e.getAttribute('data-start');
+                    block.value = e.getAttribute('data-value');
+                    block.color = e.getAttribute('data-color');
+                    blocks.push(block);
+                });
+            }
             return blocks;
         };
 
@@ -357,4 +368,37 @@ $(function () {
             }
         };
     }
+
+    // to have info/status on revert
+    // http://stackoverflow.com/questions/1853230/jquery-ui-draggable-event-status-on-revert
+    $.ui.draggable.prototype._mouseStop = function (event) {
+        //If we are using droppables, inform the manager about the drop
+        var dropped = false;
+        if ($.ui.ddmanager && !this.options.dropBehaviour) {
+            dropped = $.ui.ddmanager.drop(this, event);
+        }
+
+        //if a drop comes from outside (a sortable)
+        if (this.dropped) {
+            dropped = this.dropped;
+            this.dropped = false;
+        }
+
+        if ((this.options.revert === 'invalid' && !dropped) ||
+            (this.options.revert === 'valid' && dropped) || this.options.revert === true ||
+            ($.isFunction(this.options.revert) && this.options.revert.call(this.element, dropped))) {
+            var self = this;
+            self._trigger('reverting', event);
+            $(this.helper).animate(this.originalPosition, parseInt(this.options.revertDuration, 10), function () {
+                event.reverted = true;
+                self._trigger('stop', event);
+                self._clear();
+            });
+        } else {
+            this._trigger('stop', event);
+            this._clear();
+        }
+
+        return false;
+    };
 });

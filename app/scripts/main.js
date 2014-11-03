@@ -13,6 +13,9 @@
      *      @property {Number} userOptions.max Slider maximum value
      *      @property {Number} userOptions.step Slider sliding step
      *      @property {Object} userOptions.stepLabelDispFormat mrs step Label format default hh24
+     *      @property {Object} userOptions.toolbarId element ID when the toolbar shoud by created
+     *      @property {Object} userOptions.blocksToolbar array of objects with blocks description
+     *      @property {Object} userOptions.openBlocks array of array with open blocks data
      * }
      */
     w.Dadb = function (parentId, userOptions) {

@@ -5,7 +5,7 @@ Oracle APEX plugin/widget with blocks drag & drop interaction.
 Live example at jsFiddle http://jsfiddle.net/araczkowski/t3vj8wjr/embedded/result/
 
 
-![alt tag](https://raw.githubusercontent.com/araczkowski/MultiRangeSlider/master/app/images/dadb.png)
+![alt tag](https://raw.githubusercontent.com/araczkowski/DragAndDropBlocks/master/app/images/dadb.png)
 
 
 TODO
@@ -44,11 +44,13 @@ Dadb class constructor
 * @param {String} elementId, this id will be used to create jQuery selector
 * @param {Object} userOptions (optional) Custom options object that overrides default
 * {
-*      @property {Number} userOptions.min Block minimum value
-*      @property {Number} userOptions.max Block maximum value
-*      @property {Number} userOptions.step Block step
-*      @property {Object} userOptions.stepLabelDispFormat Dadb step Label format default hh24
-*      @property {Array} userOptions.blocksToolbar  blocks definition for blocks toolbar blocksArray example: Array([{value: 30}, {value: 60}, {value: 120}...])
+*      @property {Number} userOptions.min Slider minimum value
+*      @property {Number} userOptions.max Slider maximum value
+*      @property {Number} userOptions.step Slider sliding step
+*      @property {Object} userOptions.stepLabelDispFormat mrs step Label format default hh24
+*      @property {Object} userOptions.toolbarId element ID when the toolbar shoud by created
+*      @property {Object} userOptions.blocksToolbar array of objects with blocks description
+*      @property {Object} userOptions.openBlocks array of array with open blocks data
 * }
 */
 
@@ -76,7 +78,7 @@ Dadb.addBlocks = function(blocksArray) {}
 ```javascript
 /**
  * Gets all blocks for this Dadb instance
- * @return {Array} of each block.toPublic() object
+ * @return {Array} of blocks
  */
 
 Dadb.getBlocks = function() {}

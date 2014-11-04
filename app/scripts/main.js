@@ -289,7 +289,10 @@
             _options.openBlocks.forEach(function (block) {
                 var b = (_getBlocksInRange(block[0], block[1]));
                 for (var i = 0; i < b.length; i++) {
+
                     b[i].addClass('empty');
+                    // IE8 problem
+                    $(b[i].selector).addClass('empty');
                 }
             });
 

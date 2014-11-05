@@ -1,9 +1,7 @@
-'use strict';
-
 (function (w, $) {
 
     /**
-     * @class Mrs
+     * @class Dadb
      *
      * @constructor
      * @param {String} parentId, this id will be used to create jQuery selector and apped a module code to this id
@@ -344,7 +342,7 @@
         /**
          * Change the step value
          * @param {Number} step example: 30
-         * @return {Object} self instance of Mrs class
+         * @return {Object} self instance of Dadb class
          */
         this.changeStep = function (step) {
             _options.step = step;

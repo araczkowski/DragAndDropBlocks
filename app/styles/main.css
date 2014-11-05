@@ -84,17 +84,9 @@ div.planned-block-end {
     background: #fff;
 }
 div.draggable-block .handle {
-    height: 30%;
     cursor: move;
 }
 .step_content .closer {
-    display: block;
-    right: 5px;
-    top: 2px;
-    font: bold 14px arial;
-    color: #666;
-    padding: 0px 2px;
-    line-height: 1;
     cursor: pointer;
 }
 .fa {

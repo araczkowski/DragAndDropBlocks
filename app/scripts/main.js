@@ -252,6 +252,13 @@
 
                 if (i === 0) {
                     bSteps[i].addClass('planned-block-start');
+
+                    // TODO to improve the work in iframe
+                    // this code can be used (in addEvent function) TODO
+                    //$('span.closer').on("click", function () {
+                    //        console.log($(this).closest("div").parent().attr("id"));
+                    //  });
+
                     bSteps[i].find('div').prepend('<span class="closer" onclick="' + parentId + '.removeBlock(\'' + bSteps[0].attr('id') + '\')"><i class="fa">x</i></span>');
                     bSteps[i].attr('data-value', value);
                 }

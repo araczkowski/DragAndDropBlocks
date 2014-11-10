@@ -256,7 +256,7 @@
 
                     bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle">x</i></span>').on('click', function () {
                         _removeBlock(this);
-                    });;
+                    });
                     bSteps[i].attr('data-value', value);
                 }
 
@@ -269,9 +269,9 @@
 
         // to remove the blocks from slider
         function _removeBlock(e) {
-            var selector = '.DadbPlannedBlock_' + $(e).closest("div").parent().attr("id");
+            var selector = '.DadbPlannedBlock_' + $(e).closest('div').parent().attr('id');
             $(selector).removeClass('DadbPlannedBlockBody').removeClass('DadbPlannedBlockStart').removeClass('DadbPlannedBlockEnd').addClass('DadbEmpty');
-            $(selector).css("background-color", "");
+            $(selector).css('background-color', '');
             $(selector).find($('.DadbCloser')).remove();
             $(selector).attr('data-value', '');
         }
@@ -330,7 +330,7 @@
                     block.id = e.getAttribute('id');
                     block.start = e.getAttribute('data-start');
                     block.value = e.getAttribute('data-value');
-                    block.color = e.getAttribute('data-color');
+                    block.colorp = e.getAttribute('data-color');
                     blocks.push(block);
                 });
             }

@@ -1,15 +1,5 @@
 create or replace package body drag_and_drop_blocks_plugin is
 
-  /*
-   * DEMO DATA
-   *
-   create table multi_range_slider_data(mrs_id varchar2(4000), mrs_data varchar2(4000))
-   1  mrs1  [[390,480],[720,840],[960,1140]]
-   2  mrs2  [[390,480],[720,1140]]
-   3  mrs3  [[390,1140]]
-   *
-  */
-
   function render(p_region              in apex_plugin.t_region,
                   p_plugin              in apex_plugin.t_plugin,
                   p_is_printer_friendly in boolean)
@@ -37,7 +27,7 @@ create or replace package body drag_and_drop_blocks_plugin is
     retval           apex_plugin.t_region_render_result;
     -- test data
     cursor c_data(pc_dadb_id varchar2) is
-      select * from multi_range_slider_data m where m.dadb_id = pc_dadb_id;
+      select * from test_plugins_data m where m.dadb_id = pc_dadb_id;
     r_data c_data%rowtype;
   begin
     if apex_application.g_debug then
@@ -117,15 +107,15 @@ create or replace package body drag_and_drop_blocks_plugin is
   begin
     select count(1)
       into l_count
-      from multi_range_slider_data
+      from test_plugins_data
      where dadb_id = p_id;
 
     if l_count > 0 then
-      update multi_range_slider_data
+      update test_plugins_data
          set dadb_data = p_data
        where dadb_id = p_id;
     else
-      insert into multi_range_slider_data
+      insert into test_plugins_data
         (dadb_id, dadb_data)
       values
         (p_id, p_data);

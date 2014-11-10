@@ -23,16 +23,16 @@
         };
         var _blocksToolbar = [{
             'value': 30,
-            'color': 'rgba(235, 247, 71, 0.63)',
-            'droppedColor': 'rgba(232, 249, 8, 1)'
+            'colort': 'rgba(235, 247, 71, 0.63)',
+            'colorp': 'rgba(232, 249, 8, 1)'
         }, {
             'value': 60,
-            'color': 'rgba(235, 247, 71, 0.63)',
-            'droppedColor': 'rgba(232, 249, 8, 1)'
+            'colort': 'rgba(235, 247, 71, 0.63)',
+            'colorp': 'rgba(232, 249, 8, 1)'
         }, {
             'value': 120,
-            'color': 'rgba(235, 247, 71, 0.63)',
-            'droppedColor': 'rgba(232, 249, 8, 1)'
+            'colort': 'rgba(235, 247, 71, 0.63)',
+            'colorp': 'rgba(232, 249, 8, 1)'
         }];
 
         var _options = {
@@ -59,7 +59,7 @@
 
         function _build() {
             $('#steps_' + parentId).remove();
-            $('#' + parentId).append('<div id="steps_' + parentId + '" class="steps"></div>');
+            $('#' + parentId).append('<div id="steps_' + parentId + '" class="DadbSteps"></div>');
             var eSteps = $('#steps_' + parentId);
             var nSteps = (_options.max - _options.min) / _options.step;
             var stepWidth = 96 / nSteps;
@@ -67,10 +67,10 @@
                 var stepValue = _options.min + (i * _options.step);
                 $('<div/>', {
                     'id': 'step_' + parentId + '_' + (Number(i) + 1),
-                    'class': 'step',
+                    'class': 'DadbStep',
                     'style': 'width:' + stepWidth + '%',
                     'data-start': stepValue,
-                    'html': '<span class="tick">' + _options.stepLabelDispFormat(stepValue) + '</span><div class="step_content"></div></div>'
+                    'html': '<span class="DadbTick">' + _options.stepLabelDispFormat(stepValue) + '</span><div class="DadbStepContent"></div></div>'
                 }).appendTo(eSteps);
             }
             //
@@ -131,14 +131,15 @@
             var eBlocks = $(selector);
             var allSteps = (_options.max - _options.min) / _options.step;
             var stepWidth = 96 / allSteps;
+            var multi = $('#steps_' + parentId).width() / eBlocks.width();
             for (var i = 0; i < blocksArray.length; i++) {
                 $('<div/>', {
                     'id': 'block' + blocksArray[i].value,
-                    'class': 'draggable-block template',
+                    'class': 'DadbDraggableBlock DadbTemplate',
                     'data-value': blocksArray[i].value,
-                    'data-dropped-color': blocksArray[i].droppedColor,
-                    'html': '<span> <i class = "fa handle" >+</i></span>',
-                    'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * 3 + '%; background: ' + blocksArray[i].color,
+                    'data-dropped-color': blocksArray[i].colorp,
+                    'html': '<span> <i class = "DadbHandle" >+</i></span>',
+                    'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * multi + '%; background: ' + blocksArray[i].colort,
                 }).appendTo(eBlocks);
             }
             return;
@@ -147,7 +148,7 @@
         function _createBlocksToolbar() {
             if ($('#' + _options.toolbarId).length === 0) {
 
-                $('#' + parentId).parent().append('<div id="' + _options.toolbarId + '" class="source"></div>');
+                $('#' + parentId).parent().append('<div id="' + _options.toolbarId + '" class="DadbSource"></div>');
             }
 
             _addBlocksToTolbar('#' + _options.toolbarId, _options.blocksToolbar);
@@ -158,25 +159,25 @@
 
         function _createDroppable() {
             // Droppabe
-            $('.steps .step').droppable({
+            $('.DadbSteps .DadbStep').droppable({
                 tolerance: 'pointer',
                 revert: true,
                 //hoverClass: 'highlight',
                 over: function (event, div) {
                     var className;
                     //
-                    $('div.step').removeClass('highlightNOK');
-                    $('div.step').removeClass('highlightOK');
+                    $('div.DadbStep').removeClass('DadbHighlightNOK');
+                    $('div.DadbStep').removeClass('DadbHighlightOK');
 
 
                     var nSteps = (div.draggable.attr('data-value') / _options.step);
-                    var list = _getHoveredDivs($(this), div, 'step', nSteps);
-                    var list2 = _getHoveredDivs($(this), div, 'empty', nSteps);
+                    var list = _getHoveredDivs($(this), div, 'DadbStep', nSteps);
+                    var list2 = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
 
                     if (nSteps !== list2.length) {
-                        className = 'highlightNOK';
+                        className = 'DadbHighlightNOK';
                     } else {
-                        className = 'highlightOK';
+                        className = 'DadbHighlightOK';
                     }
 
                     list.forEach(function (entry) {
@@ -184,31 +185,31 @@
                     });
                 },
                 drop: function (ev, div) {
-                    $('div.step').removeClass('highlightNOK');
-                    $('div.step').removeClass('highlightOK');
+                    $('div.DadbStep').removeClass('DadbHighlightNOK');
+                    $('div.DadbStep').removeClass('DadbHighlightOK');
                     var nSteps = (div.draggable.attr('data-value') / _options.step);
-                    var bSteps = _getHoveredDivs($(this), div, 'empty', nSteps);
+                    var bSteps = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
                     if (bSteps.length !== nSteps) {
                         div.draggable.effect('shake', {}, 300);
                         return;
                     }
-                    _addBlock(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-dropped-color'));
+                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-dropped-color'));
                 }
             });
         }
 
         function _createDraggable() {
             // Draggable
-            $('div.draggable-block').draggable({
+            $('div.DadbDraggableBlock').draggable({
                 appendTo: 'body',
                 helper: 'clone',
                 revert: 'invalid',
-                //snap: '.steps .step',
+                //snap: '.DadbSteps .DadbStep',
                 handle: 'span i.handle',
                 greedy: true,
                 reverting: function () {
-                    $('div.step').removeClass('highlightNOK');
-                    $('div.step').removeClass('highlightOK');
+                    $('div.DadbStep').removeClass('DadbHighlightNOK');
+                    $('div.DadbStep').removeClass('DadbHighlightOK');
                 },
                 start: function (ev, div) {
                     div.helper.width($(this).width());
@@ -219,7 +220,7 @@
             });
 
             //
-            $('div.draggable, .steps .step').disableSelection();
+            $('div.draggable, .DadbSteps .DadbStep').disableSelection();
         }
 
 
@@ -241,88 +242,78 @@
         }
 
 
-        function _addBlock(bSteps, value, color) {
+        function _addSteps(bSteps, value, color) {
 
             for (var i = 0; i < bSteps.length; i++) {
-                bSteps[i].removeClass('empty');
-                bSteps[i].addClass('planned-block-body');
-                bSteps[i].addClass('planned-block-' + bSteps[0].attr('id'));
+                bSteps[i].removeClass('DadbEmpty');
+                bSteps[i].addClass('DadbPlannedBlockBody');
+                bSteps[i].addClass('DadbPlannedBlock_' + bSteps[0].attr('id'));
                 bSteps[i].attr('data-color', color);
                 bSteps[i].css('background', color);
 
                 if (i === 0) {
-                    bSteps[i].addClass('planned-block-start');
+                    bSteps[i].addClass('DadbPlannedBlockStart');
 
-                    // TODO to improve the work in iframe
-                    // this code can be used (in addEvent function) TODO
-                    //$('span.closer').on("click", function () {
-                    //        console.log($(this).closest("div").parent().attr("id"));
-                    //  });
-
-                    bSteps[i].find('div').prepend('<span class="closer" onclick="' + parentId + '.removeBlock(\'' + bSteps[0].attr('id') + '\')"><i class="fa">x</i></span>');
+                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle">x</i></span>').on('click', function () {
+                        _removeBlock(this);
+                    });;
                     bSteps[i].attr('data-value', value);
                 }
 
                 if (i === bSteps.length - 1) {
-                    bSteps[i].addClass('planned-block-end');
+                    bSteps[i].addClass('DadbPlannedBlockEnd');
                 }
             }
 
         }
 
         // to remove the blocks from slider
-        function _removeBlock(step) {
-            var selector = '.planned-block-' + step;
-            $(selector).removeClass('planned-block-body').removeClass('planned-block-start').removeClass('planned-block-end').addClass('empty');
-            $(selector).find($('.closer')).remove();
+        function _removeBlock(e) {
+            var selector = '.DadbPlannedBlock_' + $(e).closest("div").parent().attr("id");
+            $(selector).removeClass('DadbPlannedBlockBody').removeClass('DadbPlannedBlockStart').removeClass('DadbPlannedBlockEnd').addClass('DadbEmpty');
+            $(selector).css("background-color", "");
+            $(selector).find($('.DadbCloser')).remove();
             $(selector).attr('data-value', '');
         }
 
-        function _getBlocksInRange(start, value) {
-            var blocks = [];
+        function _getStepssInRange(start, value) {
+            var steps = [];
             var startId = Number(start / _options.step) - Number(_options.min / _options.step) + 1;
-            var blocksNo = value / _options.step;
+            var stepsNo = value / _options.step;
 
-            for (var n = 0; n < blocksNo; n++) {
+            for (var n = 0; n < stepsNo; n++) {
                 var step = (Number(startId) + n);
-                blocks.push($('#step_' + parentId + '_' + step));
+                steps.push($('#step_' + parentId + '_' + step));
             }
-            return blocks;
+            return steps;
         }
 
         function _openBlocks() {
             _options.openBlocks.forEach(function (block) {
-                var b = (_getBlocksInRange(block[0], block[1]));
+                var b = (_getStepssInRange(block[0], block[1]));
                 for (var i = 0; i < b.length; i++) {
-
-                    b[i].addClass('empty');
-                    // IE8 problem
-                    $(b[i].selector).addClass('empty');
+                    b[i].addClass('DadbEmpty');
                 }
             });
-
-
         }
 
+
+
         /**
-         * Adds multiple block to the slider scale
-         * @param {Array} blocksArray example: Array([[0,20],[40,60]...])
-         * @return {Object} self instance of MrDad class
+         * Adds multiple blocks to the block's scale
+         * @param {Object} ArrayOfBlocksObjects example: Array([{"start": 990, "value": 60, "planned": 0, "colorp": "#dff0d8", "coloru": "#FFFFFF"},...])
+         * @return {Object} self instance of DadB class
          */
-        this.addBlocks = function (blocksArray) {
-            if (typeof (blocksArray) === 'string') {
-                blocksArray = JSON.parse(blocksArray);
+        this.addBlocks = function (ArrayOfBlocksObjects) {
+            if (typeof (ArrayOfBlocksObjects) === 'string') {
+                ArrayOfBlocksObjects = JSON.parse(ArrayOfBlocksObjects);
             }
-            var blocksToAdd = [];
-            for (var i = 0; i < blocksArray.length; i++) {
-                blocksToAdd = _getBlocksInRange(blocksArray[i][0], blocksArray[i][1]);
-                _addBlock(blocksToAdd, blocksArray[i][1], blocksArray[i][2]);
+            var stepsToAdd = [];
+            for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
+                stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp);
             }
             return this;
-        };
-
-        this.removeBlock = function (step) {
-            _removeBlock(step);
         };
 
 
@@ -332,7 +323,7 @@
          */
         this.getBlocks = function () {
             var blocks = [];
-            var _blocks = $('div#' + parentId + ' .planned-block-start');
+            var _blocks = $('div#' + parentId + ' .DadbPlannedBlockStart');
             if (_blocks.length > 0) {
                 _blocks.each(function (i, e) {
                     var block = {};

@@ -136,7 +136,7 @@
                 $('<div/>', {
                     'id': 'block' + blocksArray[i].value,
                     'class': 'DadbDraggableBlock DadbTemplate',
-                    'data-id': blocksArray[i].id,
+                    'data-block-id': blocksArray[i].blockId,
                     'data-code': blocksArray[i].code,
                     'data-name': blocksArray[i].name,
                     'data-value': blocksArray[i].value,
@@ -198,7 +198,7 @@
                         div.draggable.effect('shake', {}, 300);
                         return;
                     }
-                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-id'));
+                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-block-id'));
                 }
             });
         }
@@ -253,7 +253,7 @@
                 bSteps[i].removeClass('DadbEmpty');
                 bSteps[i].addClass('DadbPlannedBlockBody');
                 bSteps[i].addClass('DadbPlannedBlock_' + bSteps[0].attr('id'));
-                bSteps[i].attr('data-id', blockId);
+                bSteps[i].attr('data-block-id', blockId);
                 bSteps[i].attr('data-color', color);
                 bSteps[i].css('background', color);
 
@@ -299,6 +299,7 @@
                 var b = (_getStepssInRange(block[0], block[1]));
                 for (var i = 0; i < b.length; i++) {
                     b[i].addClass('DadbEmpty');
+                    b[i].attr('data-range-id', block[2]);
                 }
             });
         }
@@ -317,7 +318,7 @@
             var stepsToAdd = [];
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp, ArrayOfBlocksObjects[i].id);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp, ArrayOfBlocksObjects[i].blockId);
             }
             return this;
         };
@@ -333,10 +334,11 @@
             if (_blocks.length > 0) {
                 _blocks.each(function (i, e) {
                     var block = {};
-                    block.id = e.getAttribute('data-id');
+                    block.blockId = e.getAttribute('data-block-id');
                     block.start = e.getAttribute('data-start');
                     block.value = e.getAttribute('data-value');
                     block.colorp = e.getAttribute('data-color');
+                    block.rangeId = e.getAttribute('data-range-id');
                     blocks.push(block);
                 });
             }

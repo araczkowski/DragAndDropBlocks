@@ -64,12 +64,12 @@
         var dadb3;
         $(function () {
             // inicialization - test from APEX (string insted of objects)
-            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
-            dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)"}]');
-            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,90],[720,420]]}');
+            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]]}');
+            dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","blockId":123}]');
+            dadb2 = new Dadb('dadb2', '{"blocksToolbar":[],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,90,55],[720,420.55]]}');
             dadb2.addBlocks('[{"start":990, "value":60, "colorp":"rgb(255, 137, 0)"}]');
 
-            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"},{"value":60,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"},{"value":120,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750]]}');
+            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":25},{"value":60,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"},{"value":120,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750,666]]}');
 
         });
     </script>

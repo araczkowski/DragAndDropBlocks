@@ -136,8 +136,13 @@
                 $('<div/>', {
                     'id': 'block' + blocksArray[i].value,
                     'class': 'DadbDraggableBlock DadbTemplate',
+                    'data-id': blocksArray[i].id,
+                    'data-code': blocksArray[i].code,
+                    'data-name': blocksArray[i].name,
                     'data-value': blocksArray[i].value,
-                    'data-dropped-color': blocksArray[i].colorp,
+                    'data-colorp': blocksArray[i].colorp,
+                    'data-colort': blocksArray[i].colort,
+                    'data-coloru': blocksArray[i].coloru,
                     'html': '<span> <i class = "DadbHandle" >+</i></span>',
                     'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * multi + '%; background: ' + blocksArray[i].colort,
                 }).appendTo(eBlocks);
@@ -193,7 +198,7 @@
                         div.draggable.effect('shake', {}, 300);
                         return;
                     }
-                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-dropped-color'));
+                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-id'));
                 }
             });
         }
@@ -242,12 +247,13 @@
         }
 
 
-        function _addSteps(bSteps, value, color) {
+        function _addSteps(bSteps, value, color, blockId) {
 
             for (var i = 0; i < bSteps.length; i++) {
                 bSteps[i].removeClass('DadbEmpty');
                 bSteps[i].addClass('DadbPlannedBlockBody');
                 bSteps[i].addClass('DadbPlannedBlock_' + bSteps[0].attr('id'));
+                bSteps[i].attr('data-id', blockId);
                 bSteps[i].attr('data-color', color);
                 bSteps[i].css('background', color);
 
@@ -311,7 +317,7 @@
             var stepsToAdd = [];
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp, ArrayOfBlocksObjects[i].id);
             }
             return this;
         };
@@ -327,7 +333,7 @@
             if (_blocks.length > 0) {
                 _blocks.each(function (i, e) {
                     var block = {};
-                    block.id = e.getAttribute('id');
+                    block.id = e.getAttribute('data-id');
                     block.start = e.getAttribute('data-start');
                     block.value = e.getAttribute('data-value');
                     block.colorp = e.getAttribute('data-color');

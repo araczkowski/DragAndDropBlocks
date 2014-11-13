@@ -53,6 +53,7 @@
             }
             _build();
             _createBlocksToolbar();
+            _createAdditionalAttributesForBlocksToolbar();
             _openBlocks();
         }
 
@@ -162,6 +163,52 @@
             _createDraggable();
         }
 
+        function _createAdditionalAttributesForBlocksToolbar() {
+            // Draggable
+            $('div.DadbDraggableBlocksAttributes i').draggable({
+                appendTo: 'body',
+                helper: 'clone',
+                revert: 'invalid',
+                handle: 'i',
+                greedy: true,
+                reverting: function () {
+                    $('div.DadbStep').removeClass('DadbHighlightNOK');
+                    $('div.DadbStep').removeClass('DadbHighlightOK');
+                },
+                start: function (ev, div) {
+                    div.helper.width($(this).width());
+                },
+                stop: function (ev, div) {
+                    div.helper.width($(this).width());
+                }
+            });
+
+            // Droppabe
+            $('div.DadbPlannedBlockBody').droppable({
+                tolerance: 'pointer',
+                revert: true,
+                //hoverClass: 'highlight',
+                over: function (event, div) {
+                    var blockSelector = '.' + $(this).attr('data-block-selector');
+                    if ($(blockSelector).last().find("i").length) {
+                        //only one atribute per block
+                        //$(blockSelector).addClass('DadbHighlightNOK');
+                        $(blockSelector).addClass('xxx');
+                    } else {
+                        //$(blockSelector).addClass('DadbHighlightOK');
+                        $(blockSelector).addClass('yyy');
+                    }
+
+                },
+                drop: function (ev, div) {
+                    var blockSelector = '.' + $(this).attr('data-block-selector');
+                    var classAtr = div.draggable.attr('class');
+                    $(blockSelector).last().append('<i class="' + classAtr + '"></i>');
+                }
+            });
+
+        }
+
         function _createDroppable() {
             // Droppabe
             $('.DadbSteps .DadbStep').droppable({
@@ -169,6 +216,7 @@
                 revert: true,
                 //hoverClass: 'highlight',
                 over: function (event, div) {
+
                     var className;
                     //
                     $('div.DadbStep').removeClass('DadbHighlightNOK');
@@ -254,6 +302,7 @@
                 bSteps[i].addClass('DadbPlannedBlockBody');
                 bSteps[i].addClass('DadbPlannedBlock_' + bSteps[0].attr('id'));
                 bSteps[i].attr('data-block-id', blockId);
+                bSteps[i].attr('data-block-selector', 'DadbPlannedBlock_' + bSteps[0].attr('id'));
                 bSteps[i].attr('data-color', color);
                 bSteps[i].css('background', color);
 
@@ -269,8 +318,9 @@
                 if (i === bSteps.length - 1) {
                     bSteps[i].addClass('DadbPlannedBlockEnd');
                 }
-            }
 
+            }
+            _createAdditionalAttributesForBlocksToolbar();
         }
 
         // to remove the blocks from slider
@@ -280,6 +330,7 @@
             $(selector).css('background-color', '');
             $(selector).find($('.DadbCloser')).remove();
             $(selector).attr('data-value', '');
+            $(selector + ' i').remove();
         }
 
         function _getStepssInRange(start, value) {

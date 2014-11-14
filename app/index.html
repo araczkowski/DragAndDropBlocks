@@ -22,7 +22,7 @@
     <div id="root_parent" class="DadbContent">
         <div class="Dadbcode">
             dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
-            <br>dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)"}]');
+            <br>dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","attId":"1", "attClass":"fa-cutlery"}]');
         </div>
         <div id="dadb1"></div>
         <div class="Dadbcode">
@@ -49,16 +49,16 @@
         <fieldset style="width: 26%; float: left;">
             <legend>tolbar3:</legend>
             <div id="tolbar3" class="DadbDraggableBlocksAttributes">
-                <i class="fa fa-cutlery"></i>&nbsp;Meal
+                <i class="fa fa-cutlery" data-att-id="1" data-att-class="fa-cutlery"></i>&nbsp;Meal
                 <br>
                 <br>
-                <i class="fa fa-futbol-o"></i>&nbsp;Futbol
+                <i class="fa fa-futbol-o" data-att-id="1" data-att-class="fa-futbol-o"></i>&nbsp;Futbol
                 <br>
                 <br>
-                <i class="fa fa-coffee"></i>&nbsp;Hot drink
+                <i class="fa fa-coffee" data-att-id="1" data-att-class="fa-coffee"></i>&nbsp;Hot drink
                 <br>
                 <br>
-                <i class="fa fa-user-md"></i>&nbsp;Medical examination
+                <i class="fa fa-user-md" data-att-id="1" data-att-class="fa-user-md"></i>&nbsp;Medical examination
 
             </div>
         </fieldset>
@@ -82,11 +82,11 @@
         $(function () {
             // inicialization - test from APEX (string insted of objects)
             dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]]}');
-            dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","blockId":123}]');
+            dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","blockId":123,"attId":"1", "attClass":"fa-cutlery"}]');
             dadb2 = new Dadb('dadb2', '{"blocksToolbar":[],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,90,55],[720,420.55]]}');
-            dadb2.addBlocks('[{"start":990, "value":60, "colorp":"rgb(255, 137, 0)"}]');
+            dadb2.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","blockId":123,"attId":"1", "attClass":"fa-cutlery"}]');
 
-            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":25},{"value":60,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"},{"value":120,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750,666]]}');
+            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":25},{"value":60,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":222},{"value":120,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":2533}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750,666]]}');
 
         });
     </script>

@@ -164,54 +164,65 @@
         }
 
         function _createAdditionalAttributesForBlocksToolbar() {
-            // Draggable
+            _createDraggableAtt();
+            _createDroppableAtt();
+        }
+
+        function _createDraggableAtt() {
             $('div.DadbDraggableBlocksAttributes i').draggable({
                 appendTo: 'body',
                 helper: 'clone',
                 revert: 'invalid',
                 handle: 'i',
-                greedy: true,
-                reverting: function () {
-                    $('div.DadbStep').removeClass('DadbHighlightNOK');
-                    $('div.DadbStep').removeClass('DadbHighlightOK');
-                },
-                start: function (ev, div) {
-                    div.helper.width($(this).width());
-                },
-                stop: function (ev, div) {
-                    div.helper.width($(this).width());
-                }
-            });
+                greedy: true, // Draggable
 
-            // Droppabe
-            $('div.DadbPlannedBlockBody').droppable({
+                reverting: function () {},
+                start: function (ev, div) {},
+                stop: function (ev, div) {}
+            });
+        }
+
+        function _createDroppableAtt(el) {
+            //div.DadbPlannedBlockBody
+            $(el || 'div.DadbPlannedBlockBody').droppable({
                 tolerance: 'pointer',
                 revert: true,
-                //hoverClass: 'highlight',
                 over: function (event, div) {
+
+                    $(div.helper).css('color', 'black');
                     var blockSelector = '.' + $(this).attr('data-block-selector');
-                    if ($(blockSelector).last().find("i").length) {
-                        //only one atribute per block
-                        //$(blockSelector).addClass('DadbHighlightNOK');
-                        $(blockSelector).addClass('xxx');
-                    } else {
-                        //$(blockSelector).addClass('DadbHighlightOK');
-                        $(blockSelector).addClass('yyy');
+                    var attId = div.draggable.attr('data-att-id');
+                    if ($(blockSelector).last().length) {
+                        if ($(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
+                            //only one atribute per blocks range
+                            $(div.helper).css('color', 'red');
+                        } else {
+                            $(div.helper).css('color', 'green');
+                        }
                     }
 
                 },
                 drop: function (ev, div) {
                     var blockSelector = '.' + $(this).attr('data-block-selector');
-                    var classAtr = div.draggable.attr('class');
-                    $(blockSelector).last().append('<i class="' + classAtr + '"></i>');
+                    var attId = div.draggable.attr('data-att-id');
+                    //only one atribute per blocks range
+                    if (!$(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
+
+                        //var el = div.draggable.clone();
+                        //$(blockSelector).last().append(el);
+                        var attId = div.draggable.attr('data-att-id');
+                        var attClass = div.draggable.attr('data-att-class');
+                        _addStepAtt($(blockSelector).last(), attId, attClass);
+                    }
                 }
             });
 
+
         }
 
-        function _createDroppable() {
+        function _createDroppable(el) {
             // Droppabe
-            $('.DadbSteps .DadbStep').droppable({
+            $(el || '.DadbSteps .DadbStep').droppable({
                 tolerance: 'pointer',
                 revert: true,
                 //hoverClass: 'highlight',
@@ -246,7 +257,7 @@
                         div.draggable.effect('shake', {}, 300);
                         return;
                     }
-                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-block-id'));
+                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
                 }
             });
         }
@@ -294,8 +305,16 @@
             return hoveredDivs;
         }
 
+        function _addStepAtt(bStep, attId, attClass) {
+            $('<i/>', {
+                'class': attClass + ' fa',
+                'data-att-id': attId,
+                'data-att-class': attClass
+            }).appendTo(bStep);
+        }
 
-        function _addSteps(bSteps, value, color, blockId) {
+
+        function _addSteps(bSteps, value, color, blockId, attId, attClass) {
 
             for (var i = 0; i < bSteps.length; i++) {
                 bSteps[i].removeClass('DadbEmpty');
@@ -317,10 +336,15 @@
 
                 if (i === bSteps.length - 1) {
                     bSteps[i].addClass('DadbPlannedBlockEnd');
+                    if (typeof (attId) != "undefined") {
+                        if (attId.length) {
+                            //meal is hardcoded
+                            _addStepAtt(bSteps[i], attId, attClass);
+                        }
+                    }
                 }
-
+                _createDroppableAtt(bSteps[i]);
             }
-            _createAdditionalAttributesForBlocksToolbar();
         }
 
         // to remove the blocks from slider
@@ -331,6 +355,8 @@
             $(selector).find($('.DadbCloser')).remove();
             $(selector).attr('data-value', '');
             $(selector + ' i').remove();
+
+            _createDroppable($(selector));
         }
 
         function _getStepssInRange(start, value) {
@@ -369,7 +395,7 @@
             var stepsToAdd = [];
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp, ArrayOfBlocksObjects[i].blockId);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
             }
             return this;
         };
@@ -390,6 +416,13 @@
                     block.value = e.getAttribute('data-value');
                     block.colorp = e.getAttribute('data-color');
                     block.rangeId = e.getAttribute('data-range-id');
+
+                    //todo fix a bug with new blocks
+                    //$//($(e).child().closest('div.DadbPlannedBlockEnd')).find('i').attr('data-att-id'));
+
+                    block.attId = $($('[data-block-id="' + block.blockId + '"]').last()).find('i').attr('data-att-id');
+                    block.attClass = $($('[data-block-id="' + block.blockId + '"]').last()).find('i').attr('data-att-class');
+
                     blocks.push(block);
                 });
             }

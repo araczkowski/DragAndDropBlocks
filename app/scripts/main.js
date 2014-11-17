@@ -316,11 +316,13 @@
 
         function _addSteps(bSteps, value, color, blockId, attId, attClass) {
 
+            var guid = _getGuid();
+
             for (var i = 0; i < bSteps.length; i++) {
                 bSteps[i].removeClass('DadbEmpty');
                 bSteps[i].addClass('DadbPlannedBlockBody');
                 bSteps[i].addClass('DadbPlannedBlock_' + bSteps[0].attr('id'));
-                bSteps[i].attr('data-block-id', blockId);
+                bSteps[i].attr('data-block-id', blockId || guid);
                 bSteps[i].attr('data-block-selector', 'DadbPlannedBlock_' + bSteps[0].attr('id'));
                 bSteps[i].attr('data-color', color);
                 bSteps[i].css('background', color);
@@ -381,6 +383,17 @@
             });
         }
 
+        function _getGuid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return function () {
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                    s4() + '-' + s4() + s4() + s4();
+            };
+        }
 
 
         /**
@@ -416,13 +429,9 @@
                     block.value = e.getAttribute('data-value');
                     block.colorp = e.getAttribute('data-color');
                     block.rangeId = e.getAttribute('data-range-id');
-
-                    //todo fix a bug with new blocks
-                    //$//($(e).child().closest('div.DadbPlannedBlockEnd')).find('i').attr('data-att-id'));
-
-                    block.attId = $($('[data-block-id="' + block.blockId + '"]').last()).find('i').attr('data-att-id');
-                    block.attClass = $($('[data-block-id="' + block.blockId + '"]').last()).find('i').attr('data-att-class');
-
+                    var blockSelector = e.getAttribute('data-block-selector');
+                    block.attId = $('.' + blockSelector).last().find('i').attr('data-att-id');
+                    block.attClass = $('.' + blockSelector).last().find('i').attr('data-att-class');
                     blocks.push(block);
                 });
             }

@@ -35,13 +35,17 @@
             'colorp': 'rgba(232, 249, 8, 1)'
         }];
 
+        var _attributesToolbar = [];
+
         var _options = {
             min: 0,
             max: 1440,
             step: 30,
             stepLabelDispFormat: _stepLabelDispFormat,
             toolbarId: 'blocksToolbar',
+            attToolbarId: 'blocksToolbar',
             blocksToolbar: _blocksToolbar,
+            attributesToolbar: _attributesToolbar,
             openBlocks: [[30, 60], [600, 90]]
         };
 
@@ -86,12 +90,18 @@
                 userOptions = JSON.parse(userOptions);
             }
 
-
             if (typeof (userOptions.blocksToolbar) !== 'undefined') {
                 if (typeof (userOptions.blocksToolbar) === 'string') {
                     userOptions.blocksToolbar = JSON.parse(userOptions.blocksToolbar);
                 }
             }
+
+            if (typeof (userOptions.attributesToolbar) !== 'undefined') {
+                if (typeof (userOptions.attributesToolbar) === 'string') {
+                    userOptions.attributesToolbar = JSON.parse(userOptions.attributesToolbar);
+                }
+            }
+
 
             if (typeof (userOptions.openBlocks) !== 'undefined') {
                 if (typeof (userOptions.openBlocks) === 'string') {
@@ -152,6 +162,21 @@
             return;
         }
 
+
+        function _addBlocksAttrToTolbar(selector, attArray) {
+            var eBlocks = $(selector);
+            for (var i = 0; i < attArray.length; i++) {
+                $('<i/>', {
+                    'class': 'fa ' + attArray[i].attClass,
+                    'data-att-id': attArray[i].attId,
+                    'data-att-class': attArray[i].attClass,
+                    'data-parentId': parentId,
+                    'html': '<span> &nbsp;' + attArray[i].attCode + '</span>'
+                }).appendTo(eBlocks);
+            }
+            return;
+        }
+
         function _createBlocksToolbar() {
             if ($('#' + _options.toolbarId).length === 0) {
 
@@ -165,6 +190,12 @@
         }
 
         function _createAdditionalAttributesForBlocksToolbar() {
+            if ($('#' + _options.attToolbarId).length === 0) {
+                $('#' + parentId).parent().append('<div id="' + _options.attToolbarId + '" class="DadbDraggableBlocksAttributes"></div>');
+            }
+
+            _addBlocksAttrToTolbar('#' + _options.attToolbarId, _options.attributesToolbar);
+
             _createDraggableAtt();
             _createDroppableAtt();
         }
@@ -184,7 +215,6 @@
         }
 
         function _createDroppableAtt(el) {
-            //div.DadbPlannedBlockBody
             $(el || 'div.DadbPlannedBlockBody').droppable({
                 tolerance: 'pointer',
                 revert: true,
@@ -193,12 +223,18 @@
                     $(div.helper).css('color', 'black');
                     var blockSelector = '.' + $(this).attr('data-block-selector');
                     var attId = div.draggable.attr('data-att-id');
-                    if ($(blockSelector).last().length) {
-                        if ($(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
-                            //only one atribute per blocks range
-                            $(div.helper).css('color', 'red');
-                        } else {
-                            $(div.helper).css('color', 'green');
+
+                    //allow the drop only for the blocks from the same instance
+                    var blockParentId = div.draggable.attr('data-parentId');
+                    if (blockParentId === parentId) {
+
+                        if ($(blockSelector).last().length) {
+                            if ($(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
+                                //only one atribute per blocks range
+                                $(div.helper).css('color', 'red');
+                            } else {
+                                $(div.helper).css('color', 'green');
+                            }
                         }
                     }
 
@@ -206,14 +242,19 @@
                 drop: function (ev, div) {
                     var blockSelector = '.' + $(this).attr('data-block-selector');
                     var attId = div.draggable.attr('data-att-id');
-                    //only one atribute per blocks range
-                    if (!$(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
 
-                        //var el = div.draggable.clone();
-                        //$(blockSelector).last().append(el);
-                        var attId = div.draggable.attr('data-att-id');
-                        var attClass = div.draggable.attr('data-att-class');
-                        _addStepAtt($(blockSelector).last(), attId, attClass);
+                    //allow the drop only for the blocks from the same instance
+                    var blockParentId = div.draggable.attr('data-parentId');
+                    if (blockParentId === parentId) {
+                        //only one atribute per blocks range
+                        if (!$(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
+
+                            //var el = div.draggable.clone();
+                            //$(blockSelector).last().append(el);
+                            var attId = div.draggable.attr('data-att-id');
+                            var attClass = div.draggable.attr('data-att-class');
+                            _addStepAtt($(blockSelector).last(), attId, attClass);
+                        }
                     }
                 }
             });

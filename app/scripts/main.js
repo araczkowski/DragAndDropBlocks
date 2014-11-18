@@ -144,6 +144,7 @@
                     'data-colorp': blocksArray[i].colorp,
                     'data-colort': blocksArray[i].colort,
                     'data-coloru': blocksArray[i].coloru,
+                    'data-parentId': parentId,
                     'html': '<span> <i class = "DadbHandle" >+</i></span>',
                     'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * multi + '%; background: ' + blocksArray[i].colort,
                 }).appendTo(eBlocks);
@@ -222,42 +223,50 @@
 
         function _createDroppable(el) {
             // Droppabe
-            $(el || '.DadbSteps .DadbStep').droppable({
+            $(el || '#steps_' + parentId + '.DadbSteps .DadbStep').droppable({
                 tolerance: 'pointer',
                 revert: true,
-                //hoverClass: 'highlight',
                 over: function (event, div) {
-
                     var className;
                     //
                     $('div.DadbStep').removeClass('DadbHighlightNOK');
                     $('div.DadbStep').removeClass('DadbHighlightOK');
+                    //allow the drop only for the blocks from the same instance
+                    var blockParentId = div.draggable.attr('data-parentId');
+                    if (blockParentId === parentId) {
+                        //
+                        var nSteps = (div.draggable.attr('data-value') / _options.step);
+                        var list = _getHoveredDivs($(this), div, 'DadbStep', nSteps);
+                        var list2 = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
+                        if (nSteps !== list2.length) {
+                            className = 'DadbHighlightNOK';
+                        } else {
+                            className = 'DadbHighlightOK';
+                        }
 
-
-                    var nSteps = (div.draggable.attr('data-value') / _options.step);
-                    var list = _getHoveredDivs($(this), div, 'DadbStep', nSteps);
-                    var list2 = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
-
-                    if (nSteps !== list2.length) {
-                        className = 'DadbHighlightNOK';
+                        list.forEach(function (entry) {
+                            entry.addClass(className);
+                        });
                     } else {
-                        className = 'DadbHighlightOK';
+                        $('#' + parentId + ' .DadbStep').addClass('DadbHighlightNOK');
                     }
-
-                    list.forEach(function (entry) {
-                        entry.addClass(className);
-                    });
                 },
                 drop: function (ev, div) {
                     $('div.DadbStep').removeClass('DadbHighlightNOK');
                     $('div.DadbStep').removeClass('DadbHighlightOK');
-                    var nSteps = (div.draggable.attr('data-value') / _options.step);
-                    var bSteps = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
-                    if (bSteps.length !== nSteps) {
-                        div.draggable.effect('shake', {}, 300);
-                        return;
+
+                    //allow the drop only for the blocks from the same instance
+                    var blockParentId = div.draggable.attr('data-parentId');
+                    if (blockParentId === parentId) {
+                        var nSteps = (div.draggable.attr('data-value') / _options.step);
+                        var bSteps = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
+                        if (bSteps.length !== nSteps) {
+                            div.draggable.effect('shake', {}, 300);
+                            return;
+                        }
+                        _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
+
                     }
-                    _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
                 }
             });
         }

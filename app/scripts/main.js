@@ -43,7 +43,7 @@
             step: 30,
             stepLabelDispFormat: _stepLabelDispFormat,
             toolbarId: 'blocksToolbar',
-            attToolbarId: 'blocksToolbar',
+            attToolbarId: '',
             blocksToolbar: _blocksToolbar,
             attributesToolbar: _attributesToolbar,
             openBlocks: [[30, 60], [600, 90]]
@@ -155,7 +155,7 @@
                     'data-colort': blocksArray[i].colort,
                     'data-coloru': blocksArray[i].coloru,
                     'data-parentId': parentId,
-                    'html': '<span> <i class = "DadbHandle" >+</i></span>',
+                    'html': '<span> <i class = "DadbHandle fa fa-arrows"></i></span>',
                     'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * multi + '%; background: ' + blocksArray[i].colort,
                 }).appendTo(eBlocks);
             }
@@ -167,11 +167,11 @@
             var eBlocks = $(selector);
             for (var i = 0; i < attArray.length; i++) {
                 $('<i/>', {
-                    'class': 'fa ' + attArray[i].attClass,
+                    'class': 'fa fa-2x ' + attArray[i].attClass,
                     'data-att-id': attArray[i].attId,
                     'data-att-class': attArray[i].attClass,
                     'data-parentId': parentId,
-                    'html': '<span> &nbsp;' + attArray[i].attCode + '</span>'
+                    'html': '<span></span>' // &nbsp; + attArray[i].attCode
                 }).appendTo(eBlocks);
             }
             return;
@@ -190,14 +190,20 @@
         }
 
         function _createAdditionalAttributesForBlocksToolbar() {
-            if ($('#' + _options.attToolbarId).length === 0) {
-                $('#' + parentId).parent().append('<div id="' + _options.attToolbarId + '" class="DadbDraggableBlocksAttributes"></div>');
+
+            if (_options.attToolbarId.length > 0) {
+
+                if ($('#' + _options.attToolbarId).length === 0) {
+                    $('#' + parentId).parent().append('<div id="' + _options.attToolbarId + '" class="DadbDraggableBlocksAttributes"></div>');
+                } else {
+                    $('#' + _options.attToolbarId).addClass('DadbDraggableBlocksAttributes');
+                }
+
+                _addBlocksAttrToTolbar('#' + _options.attToolbarId, _options.attributesToolbar);
+
+                _createDraggableAtt();
+                _createDroppableAtt();
             }
-
-            _addBlocksAttrToTolbar('#' + _options.attToolbarId, _options.attributesToolbar);
-
-            _createDraggableAtt();
-            _createDroppableAtt();
         }
 
         function _createDraggableAtt() {
@@ -206,19 +212,20 @@
                 helper: 'clone',
                 revert: 'invalid',
                 handle: 'i',
-                greedy: true, // Draggable
-
-                reverting: function () {},
-                start: function (ev, div) {},
-                stop: function (ev, div) {}
+                greedy: true
             });
         }
 
         function _createDroppableAtt(el) {
-            $(el || 'div.DadbPlannedBlockBody').droppable({
+            $(el || '#steps_' + parentId + ' div.DadbPlannedBlockBody').droppable({
                 tolerance: 'pointer',
                 revert: true,
                 over: function (event, div) {
+
+                    // only attr
+                    if (typeof (div.draggable.attr('data-att-id')) === 'undefined') {
+                        return;
+                    }
 
                     $(div.helper).css('color', 'black');
                     var blockSelector = '.' + $(this).attr('data-block-selector');
@@ -227,7 +234,6 @@
                     //allow the drop only for the blocks from the same instance
                     var blockParentId = div.draggable.attr('data-parentId');
                     if (blockParentId === parentId) {
-
                         if ($(blockSelector).last().length) {
                             if ($(blockSelector).parent().find('i[data-att-id="' + attId + '"]').length) {
                                 //only one atribute per blocks range
@@ -236,6 +242,8 @@
                                 $(div.helper).css('color', 'green');
                             }
                         }
+                    } else {
+                        $(div.helper).css('color', 'red');
                     }
 
                 },
@@ -251,7 +259,6 @@
 
                             //var el = div.draggable.clone();
                             //$(blockSelector).last().append(el);
-                            var attId = div.draggable.attr('data-att-id');
                             var attClass = div.draggable.attr('data-att-class');
                             _addStepAtt($(blockSelector).last(), attId, attClass);
                         }
@@ -268,10 +275,20 @@
                 tolerance: 'pointer',
                 revert: true,
                 over: function (event, div) {
+
+                    // only blocks
+                    if (typeof (div.draggable.attr('data-value')) === 'undefined') {
+                        $(div.helper).css('color', 'red');
+                        return;
+                    }
+
                     var className;
                     //
                     $('div.DadbStep').removeClass('DadbHighlightNOK');
                     $('div.DadbStep').removeClass('DadbHighlightOK');
+
+
+
                     //allow the drop only for the blocks from the same instance
                     var blockParentId = div.draggable.attr('data-parentId');
                     if (blockParentId === parentId) {
@@ -380,7 +397,7 @@
                 if (i === 0) {
                     bSteps[i].addClass('DadbPlannedBlockStart');
 
-                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle">x</i></span>').on('click', function () {
+                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function () {
                         _removeBlock(this);
                     });
                     bSteps[i].attr('data-value', value);
@@ -388,7 +405,7 @@
 
                 if (i === bSteps.length - 1) {
                     bSteps[i].addClass('DadbPlannedBlockEnd');
-                    if (typeof (attId) != "undefined") {
+                    if (typeof (attId) !== 'undefined') {
                         if (attId.length) {
                             //meal is hardcoded
                             _addStepAtt(bSteps[i], attId, attClass);

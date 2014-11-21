@@ -155,7 +155,7 @@
                     'data-colort': blocksArray[i].colort,
                     'data-coloru': blocksArray[i].coloru,
                     'data-parentId': parentId,
-                    'html': '<span> <i class = "DadbHandle fa fa-arrows"></i></span>',
+                    'html': '<span> <i class = "DadbHandle fa fa-arrows">+</i></span>',
                     'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * multi + '%; background: ' + blocksArray[i].colort,
                 }).appendTo(eBlocks);
             }
@@ -397,7 +397,7 @@
                 if (i === 0) {
                     bSteps[i].addClass('DadbPlannedBlockStart');
 
-                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function () {
+                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times">x</i></span>').on('click', function () {
                         _removeBlock(this);
                     });
                     bSteps[i].attr('data-value', value);

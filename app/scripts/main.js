@@ -22,17 +22,81 @@
             return Math.abs(steps) % 60 === 0 ? ((hours < 10 && hours >= 0) ? '0' : '') + hours : '';
         };
         var _blocksToolbar = [{
-            'value': 30,
-            'colort': 'rgba(235, 247, 71, 0.63)',
-            'colorp': 'rgba(232, 249, 8, 1)'
+            "code": "K15",
+            "value": 15,
+            "blockId": 1,
+            "attributes": [{
+                "COL_Toolbar": "#ff7c34"
+            }, {
+                "COL_Planned": "#ff7c34"
+            }, {
+                "COL_Unplanned": "white"
+            }, {
+                "COL_Real": "#7bce5b"
+            }, {
+                "COL_Unreal": "white"
+            }, {
+                "COL_Added": "#3c8a27"
+            }, {
+                "COL_Deleted": "#ff3d25"
+            }]
         }, {
-            'value': 60,
-            'colort': 'rgba(235, 247, 71, 0.63)',
-            'colorp': 'rgba(232, 249, 8, 1)'
+            "code": "K30",
+            "value": 30,
+            "blockId": 2,
+            "attributes": [{
+                "COL_Toolbar": "#ff7c34"
+            }, {
+                "COL_Planned": "#ff7c34"
+            }, {
+                "COL_Unplanned": "white"
+            }, {
+                "COL_Real": "#7bce5b"
+            }, {
+                "COL_Unreal": "white"
+            }, {
+                "COL_Added": "#3c8a27"
+            }, {
+                "COL_Deleted": "#ff3d25"
+            }]
         }, {
-            'value': 120,
-            'colort': 'rgba(235, 247, 71, 0.63)',
-            'colorp': 'rgba(232, 249, 8, 1)'
+            "code": "K60",
+            "value": 60,
+            "blockId": 3,
+            "attributes": [{
+                "COL_Toolbar": "#ff7c34"
+            }, {
+                "COL_Planned": "#ff7c34"
+            }, {
+                "COL_Unplanned": "white"
+            }, {
+                "COL_Real": "#7bce5b"
+            }, {
+                "COL_Unreal": "white"
+            }, {
+                "COL_Added": "#3c8a27"
+            }, {
+                "COL_Deleted": "#ff3d25"
+            }]
+        }, {
+            "code": "K120",
+            "value": 120,
+            "blockId": 4,
+            "attributes": [{
+                "COL_Toolbar": "#ff7c34"
+            }, {
+                "COL_Planned": "#ff7c34"
+            }, {
+                "COL_Unplanned": "white"
+            }, {
+                "COL_Real": "#7bce5b"
+            }, {
+                "COL_Unreal": "white"
+            }, {
+                "COL_Added": "#3c8a27"
+            }, {
+                "COL_Deleted": "#ff3d25"
+            }]
         }];
 
         var _attributesToolbar = [];
@@ -40,7 +104,8 @@
         var _options = {
             min: 0,
             max: 1440,
-            step: 30,
+            step: 15,
+            stepWidth: 24,
             stepLabelDispFormat: _stepLabelDispFormat,
             toolbarId: 'blocksToolbar',
             attToolbarId: '',
@@ -67,19 +132,18 @@
             $('#' + parentId).append('<div id="steps_' + parentId + '" class="DadbSteps"></div>');
             var eSteps = $('#steps_' + parentId);
             var nSteps = (_options.max - _options.min) / _options.step;
-            var stepWidth = 96 / nSteps;
             for (var i = 0; nSteps > i; i++) {
                 var stepValue = _options.min + (i * _options.step);
                 $('<div/>', {
                     'id': 'step_' + parentId + '_' + (Number(i) + 1),
                     'class': 'DadbStep',
-                    'style': 'width:' + stepWidth + '%',
+                    'style': 'width:' + _options.stepWidth + 'px',
                     'data-start': stepValue,
                     'html': '<span class="DadbTick">' + _options.stepLabelDispFormat(stepValue) + '</span><div class="DadbStepContent"></div></div>'
                 }).appendTo(eSteps);
             }
             //
-            $('#steps_' + parentId).width(nSteps * stepWidth + '%');
+            $('#steps_' + parentId).width(nSteps * _options.stepWidth) + 'px';
         }
 
         function _mergeOptions() {
@@ -143,21 +207,32 @@
             var allSteps = (_options.max - _options.min) / _options.step;
             var stepWidth = 96 / allSteps;
             var multi = $('#steps_' + parentId).width() / eBlocks.width();
+
             for (var i = 0; i < blocksArray.length; i++) {
-                $('<div/>', {
+                var block = $('<div/>', {
                     'id': 'block' + blocksArray[i].value,
                     'class': 'DadbDraggableBlock DadbTemplate',
                     'data-block-id': blocksArray[i].blockId,
                     'data-code': blocksArray[i].code,
                     'data-name': blocksArray[i].name,
                     'data-value': blocksArray[i].value,
-                    'data-colorp': blocksArray[i].colorp,
-                    'data-colort': blocksArray[i].colort,
-                    'data-coloru': blocksArray[i].coloru,
                     'data-parentId': parentId,
-                    'html': '<span> <i class = "DadbHandle fa fa-arrows">+</i></span>',
-                    'style': 'width:' + (blocksArray[i].value / _options.step) * stepWidth * multi + '%; background: ' + blocksArray[i].colort,
+                    'html': '<span> <i class = "DadbHandle fa fa-arrows"></i></span>',
                 }).appendTo(eBlocks);
+
+                //attributes
+                for (var n = 0; n < blocksArray[i].attributes.length; n++) {
+                    var obj = blocksArray[i].attributes[n];
+                    var k = '';
+                    var v = '';
+                    for (var key in obj) {
+                        k = key;
+                        v = obj[key];
+                    }
+                    block.attr('data-' + k, v);
+                }
+                var backgr = block.data('col_toolbar');
+                block.attr('style', 'width:' + (blocksArray[i].value / _options.step) * _options.stepWidth + 'px; background: ' + backgr + ';');
             }
             return;
         }
@@ -322,7 +397,7 @@
                             div.draggable.effect('shake', {}, 300);
                             return;
                         }
-                        _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-colorp'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
+                        _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-col_planned'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
 
                     }
                 }
@@ -397,7 +472,7 @@
                 if (i === 0) {
                     bSteps[i].addClass('DadbPlannedBlockStart');
 
-                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times">x</i></span>').on('click', function () {
+                    bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function () {
                         _removeBlock(this);
                     });
                     bSteps[i].attr('data-value', value);
@@ -465,7 +540,7 @@
 
         /**
          * Adds multiple blocks to the block's scale
-         * @param {Object} ArrayOfBlocksObjects example: Array([{"start": 990, "value": 60, "planned": 0, "colorp": "#dff0d8", "coloru": "#FFFFFF"},...])
+         * @param {Object} ArrayOfBlocksObjects example: Array([{"start": 990, "value": 60, "planned": 0, "col_planned": "#dff0d8"},...])
          * @return {Object} self instance of DadB class
          */
         this.addBlocks = function (ArrayOfBlocksObjects) {
@@ -475,7 +550,7 @@
             var stepsToAdd = [];
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colorp, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].col_planned, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
             }
             return this;
         };
@@ -494,7 +569,6 @@
                     block.blockId = e.getAttribute('data-block-id');
                     block.start = e.getAttribute('data-start');
                     block.value = e.getAttribute('data-value');
-                    block.colorp = e.getAttribute('data-color');
                     block.rangeId = e.getAttribute('data-range-id');
                     var blockSelector = e.getAttribute('data-block-selector');
                     block.attId = $('.' + blockSelector).last().find('i').attr('data-att-id');

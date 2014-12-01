@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" href="/favicon.ico">
     <!-- like in apex-->
-    <!--link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"-->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- build:css styles/vendor.css -->
     <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.css">
     <!-- bower:css -->
@@ -21,16 +21,19 @@
 
 <body>
     <div id="root_parent" class="DadbContent">
-        <div class="Dadbcode">
-            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
-            <br>dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","attId":"1", "attClass":"fa-cutlery"}]');
-        </div>
-        <div id="dadb1"></div>
-        <div class="Dadbcode">
-            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"color": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"},{"value":60,"color": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"},{"value":120,"colorp": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750]]}');
-        </div>
-        <div id="dadb3"></div>
 
+        <div id="" style="overflow: auto; width: 700px; margin-right: 20px; padding-top: 20px;">
+            <div class="Dadbcode">
+                dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
+                <br>dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","attId":"1", "attClass":"fa-cutlery"}]');
+            </div>
+            <div id="dadb1"></div>
+            <div class="Dadbcode">
+                dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"color": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"},{"value":60,"color": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"},{"value":120,"colorp": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750]]}');
+            </div>
+            <div id="dadb3"></div>
+
+        </div>
         <br>
         <br>
 
@@ -66,11 +69,11 @@
         var dadb3;
         $(function () {
             // inicialization - test from APEX (string insted of objects)
-            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]],"attToolbarId":"tolbar3", "attributesToolbar":[{"attId":24,"attClass":"fa-cutlery","attCode":"MEAL"}]}');
-            dadb1.addBlocks('[{"start":990, "value":60,"colorp":"rgb(232, 249, 8)","blockId":123}]');
+            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":15,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]],"attToolbarId":"tolbar3", "attributesToolbar":[{"attId":24,"attClass":"fa-cutlery","attCode":"MEAL"}]}');
+            dadb1.addBlocks('[{"start":990, "value":60,"col_planned":"rgb(232, 249, 8)","blockId":123}]');
 
 
-            dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":25},{"value":60,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":222},{"value":120,"colort": "rgb(250, 161, 106)","colorp":"rgb(255, 137, 0)","blockId":2533}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750,666]]}');
+            dadb3 = new Dadb('dadb3', '{}');
 
         });
     </script>

@@ -22,80 +22,80 @@
             return Math.abs(steps) % 60 === 0 ? ((hours < 10 && hours >= 0) ? '0' : '') + hours : '';
         };
         var _blocksToolbar = [{
-            "code": "K15",
-            "value": 15,
-            "blockId": 1,
-            "attributes": [{
-                "COL_Toolbar": "#ff7c34"
+            'code': 'K15',
+            'value': 15,
+            'blockId': 1,
+            'attributes': [{
+                'COL_Toolbar': '#ff7c34'
             }, {
-                "COL_Planned": "#ff7c34"
+                'COL_Planned': '#ff7c34'
             }, {
-                "COL_Unplanned": "white"
+                'COL_Unplanned': 'white'
             }, {
-                "COL_Real": "#7bce5b"
+                'COL_Real': '#7bce5b'
             }, {
-                "COL_Unreal": "white"
+                'COL_Unreal': 'white'
             }, {
-                "COL_Added": "#3c8a27"
+                'COL_Added': '#3c8a27'
             }, {
-                "COL_Deleted": "#ff3d25"
+                'COL_Deleted': '#ff3d25'
             }]
         }, {
-            "code": "K30",
-            "value": 30,
-            "blockId": 2,
-            "attributes": [{
-                "COL_Toolbar": "#ff7c34"
+            'code': 'K30',
+            'value': 30,
+            'blockId': 2,
+            'attributes': [{
+                'COL_Toolbar': '#ff7c34'
             }, {
-                "COL_Planned": "#ff7c34"
+                'COL_Planned': '#ff7c34'
             }, {
-                "COL_Unplanned": "white"
+                'COL_Unplanned': 'white'
             }, {
-                "COL_Real": "#7bce5b"
+                'COL_Real': '#7bce5b'
             }, {
-                "COL_Unreal": "white"
+                'COL_Unreal': 'white'
             }, {
-                "COL_Added": "#3c8a27"
+                'COL_Added': '#3c8a27'
             }, {
-                "COL_Deleted": "#ff3d25"
+                'COL_Deleted': '#ff3d25'
             }]
         }, {
-            "code": "K60",
-            "value": 60,
-            "blockId": 3,
-            "attributes": [{
-                "COL_Toolbar": "#ff7c34"
+            'code': 'K60',
+            'value': 60,
+            'blockId': 3,
+            'attributes': [{
+                'COL_Toolbar': '#ff7c34'
             }, {
-                "COL_Planned": "#ff7c34"
+                'COL_Planned': '#ff7c34'
             }, {
-                "COL_Unplanned": "white"
+                'COL_Unplanned': 'white'
             }, {
-                "COL_Real": "#7bce5b"
+                'COL_Real': '#7bce5b'
             }, {
-                "COL_Unreal": "white"
+                'COL_Unreal': 'white'
             }, {
-                "COL_Added": "#3c8a27"
+                'COL_Added': '#3c8a27'
             }, {
-                "COL_Deleted": "#ff3d25"
+                'COL_Deleted': '#ff3d25'
             }]
         }, {
-            "code": "K120",
-            "value": 120,
-            "blockId": 4,
-            "attributes": [{
-                "COL_Toolbar": "#ff7c34"
+            'code': 'K120',
+            'value': 120,
+            'blockId': 4,
+            'attributes': [{
+                'COL_Toolbar': '#ff7c34'
             }, {
-                "COL_Planned": "#ff7c34"
+                'COL_Planned': '#ff7c34'
             }, {
-                "COL_Unplanned": "white"
+                'COL_Unplanned': 'white'
             }, {
-                "COL_Real": "#7bce5b"
+                'COL_Real': '#7bce5b'
             }, {
-                "COL_Unreal": "white"
+                'COL_Unreal': 'white'
             }, {
-                "COL_Added": "#3c8a27"
+                'COL_Added': '#3c8a27'
             }, {
-                "COL_Deleted": "#ff3d25"
+                'COL_Deleted': '#ff3d25'
             }]
         }];
 
@@ -204,10 +204,6 @@
 
         function _addBlocksToTolbar(selector, blocksArray) {
             var eBlocks = $(selector);
-            var allSteps = (_options.max - _options.min) / _options.step;
-            var stepWidth = 96 / allSteps;
-            var multi = $('#steps_' + parentId).width() / eBlocks.width();
-
             for (var i = 0; i < blocksArray.length; i++) {
                 var block = $('<div/>', {
                     'id': 'block' + blocksArray[i].value,
@@ -550,7 +546,7 @@
             var stepsToAdd = [];
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].col_planned, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colplanned, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
             }
             return this;
         };

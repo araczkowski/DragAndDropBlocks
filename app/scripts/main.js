@@ -105,7 +105,7 @@
             min: 0,
             max: 1440,
             step: 15,
-            stepWidth: 24,
+            stepWidth: 20,
             stepLabelDispFormat: _stepLabelDispFormat,
             toolbarId: 'blocksToolbar',
             attToolbarId: '',
@@ -407,7 +407,7 @@
                 helper: 'clone',
                 revert: 'invalid',
                 //snap: '.DadbSteps .DadbStep',
-                handle: 'span i.handle',
+                handle: 'span i.DadbHandle',
                 greedy: true,
                 reverting: function () {
                     $('div.DadbStep').removeClass('DadbHighlightNOK');

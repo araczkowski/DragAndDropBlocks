@@ -70,11 +70,11 @@
         $(function () {
             // inicialization - test from APEX (string insted of objects)
             dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":15,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]],"attToolbarId":"tolbar3", "attributesToolbar":[{"attId":24,"attClass":"fa-cutlery","attCode":"MEAL"}]}');
-            dadb1.addBlocks('[{"start":360, "value":60, "attributes": [{"COL_Toolbar":"#ff7c34"},{"COL_Planned":"#ff7c34"}]}]');
+            dadb1.addBlocks('[{"blockId":"123", "start":420, "value":60, "rangeId":"100", "backgroundColor":"#ff7c34"}]');
 
 
-            dadb3 = new Dadb('dadb3', '{}');
-
+            dadb3 = new Dadb('dadb3', '{"min":360,"max":1170,"step":15,"toolbarId":"tolbar2", "openBlocks":[[390,90,4],[720,120,5],[960,180,6]]}');
+            dadb3.addBlocks('[{"blockId":"333", "start":720, "value":15,"rangeId":"210", "backgroundColor":"#ff7c34"}]');
         });
     </script>
 </body>

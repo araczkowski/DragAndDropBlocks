@@ -98,7 +98,6 @@
                 'COL_Deleted': '#ff3d25'
             }]
         }];
-
         var _attributesToolbar = [];
 
         var _options = {
@@ -113,6 +112,9 @@
             attributesToolbar: _attributesToolbar,
             openBlocks: [[30, 60], [600, 90]]
         };
+
+        var _onAddBlock = null,
+            _onDeleteBlock = null;
 
 
         function _init() {
@@ -228,6 +230,7 @@
                     block.attr('data-' + k, v);
                 }
                 var backgr = block.data('col_toolbar');
+                block.attr('data-color', backgr);
                 block.attr('style', 'width:' + (blocksArray[i].value / _options.step) * _options.stepWidth + 'px; background: ' + backgr + ';');
             }
             return;
@@ -393,7 +396,7 @@
                             div.draggable.effect('shake', {}, 300);
                             return;
                         }
-                        _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-col_planned'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
+                        _addSteps(bSteps, div.draggable.attr('data-value'), div.draggable.attr('data-color'), div.draggable.attr('data-block-id'), div.draggable.attr('data-att-id'), div.draggable.attr('data-att-class'));
 
                     }
                 }
@@ -485,6 +488,10 @@
                 }
                 _createDroppableAtt(bSteps[i]);
             }
+
+            if (typeof (_onAddBlock) === 'function') {
+                _onAddBlock();
+            }
         }
 
         // to remove the blocks from slider
@@ -497,6 +504,10 @@
             $(selector + ' i').remove();
 
             _createDroppable($(selector));
+
+            if (typeof (_onDeleteBlock) === 'function') {
+                _onDeleteBlock();
+            }
         }
 
         function _getStepssInRange(start, value) {
@@ -547,7 +558,7 @@
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
                 //attributes
-                var backgroundColor = '';
+                /*                var backgroundColor = '';
                 for (var n = 0; n < ArrayOfBlocksObjects[i].attributes.length; n++) {
                     var obj = ArrayOfBlocksObjects[i].attributes[n];
                     for (var key in obj) {
@@ -555,9 +566,9 @@
                             backgroundColor = obj[key];
                         }
                     }
-                }
+                }*/
 
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, backgroundColor, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].backgroundColor, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
             }
             return this;
         };
@@ -577,13 +588,32 @@
                     block.start = e.getAttribute('data-start');
                     block.value = e.getAttribute('data-value');
                     block.rangeId = e.getAttribute('data-range-id');
-                    var blockSelector = e.getAttribute('data-block-selector');
-                    block.attId = $('.' + blockSelector).last().find('i').attr('data-att-id');
-                    block.attClass = $('.' + blockSelector).last().find('i').attr('data-att-class');
+                    block.backgroundColor = e.getAttribute('data-color');
+                    //var blockSelector = e.getAttribute('data-block-selector');
+                    //block.attId = $('.' + blockSelector).last().find('i').attr('data-att-id');
+                    //block.attClass = $('.' + blockSelector).last().find('i').attr('data-att-class');
                     blocks.push(block);
                 });
             }
-            return blocks;
+            return JSON.stringify(blocks);
+        };
+
+        /**
+         * Sets callback function that can be used when the plugin value will change
+         *
+         * @param {Function} callbackFunction
+         *      stores a callback function
+         *
+         * @example
+         *      mrs.setOnChangeCallback(function(callback));
+         * @return {Object} self instance of Mrs class
+         */
+        this.setOnChangeCallback = function (callbackFunction) {
+            if (typeof (callbackFunction) === 'function') {
+                _onAddBlock = callbackFunction;
+                _onDeleteBlock = callbackFunction;
+            }
+            return this;
         };
 
         /**
@@ -659,4 +689,5 @@ $(function () {
 
         return false;
     };
+
 });

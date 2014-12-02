@@ -546,7 +546,18 @@
             var stepsToAdd = [];
             for (var i = 0; i < ArrayOfBlocksObjects.length; i++) {
                 stepsToAdd = _getStepssInRange(ArrayOfBlocksObjects[i].start, ArrayOfBlocksObjects[i].value);
-                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, ArrayOfBlocksObjects[i].colplanned, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
+                //attributes
+                var backgroundColor = '';
+                for (var n = 0; n < ArrayOfBlocksObjects[i].attributes.length; n++) {
+                    var obj = ArrayOfBlocksObjects[i].attributes[n];
+                    for (var key in obj) {
+                        if (key == 'COL_Toolbar') {
+                            backgroundColor = obj[key];
+                        }
+                    }
+                }
+
+                _addSteps(stepsToAdd, ArrayOfBlocksObjects[i].value, backgroundColor, ArrayOfBlocksObjects[i].blockId, ArrayOfBlocksObjects[i].attId, ArrayOfBlocksObjects[i].attClass);
             }
             return this;
         };

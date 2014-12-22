@@ -134,16 +134,43 @@
             $('#' + parentId).append('<div id="steps_' + parentId + '" class="DadbSteps"></div>');
             var eSteps = $('#steps_' + parentId);
             var nSteps = (_options.max - _options.min) / _options.step;
+            var clickStep = 0;
+            var contentClass = '';
+            var stepClass = '';
             for (var i = 0; nSteps > i; i++) {
+                clickStep = (i * _options.step) % 60;
+                if (clickStep === 0) {
+                    contentClass = 'DadbStepContentFullHour';
+                    stepClass = 'DadbStepFullHour';
+                } else if (clickStep === 30) {
+                    contentClass = 'DadbStepContentHalfHour';
+                    stepClass = 'DadbStepHalfHour';
+                } else {
+                    contentClass = 'DadbStepContentQuarter';
+                    stepClass = 'DadbStepQuarter';
+                }
+                console.log(i);
+                if (i === 0) {
+                    console.log('zero');
+                    contentClass = contentClass + ' DadbStepContentStart';
+                    stepClass = stepClass + ' DadbStepStart';
+                }
+                if (i === nSteps - 1) {
+                    contentClass = contentClass + ' DadbStepContentEnd';
+                    stepClass = stepClass + ' DadbStepEnd';
+                }
                 var stepValue = _options.min + (i * _options.step);
                 $('<div/>', {
                     'id': 'step_' + parentId + '_' + (Number(i) + 1),
-                    'class': 'DadbStep',
+                    'class': stepClass +' DadbStep',
                     'style': 'width:' + _options.stepWidth + 'px',
                     'data-start': stepValue,
-                    'html': '<span class="DadbTick">' + _options.stepLabelDispFormat(stepValue) + '</span><div class="DadbStepContent"></div></div>'
+                    'html': '<span class="DadbTick">' + _options.stepLabelDispFormat(stepValue) + '</span><div class="DadbStepContent '+contentClass+'"></div></div>'
                 }).appendTo(eSteps);
             }
+
+            $('#steps_' + parentId).append('<div><span class="DadbTick">' + _options.stepLabelDispFormat(_options.min + (nSteps * _options.step)) + '</span></div>');
+
             //
             $('#steps_' + parentId).width(nSteps * _options.stepWidth) + 'px';
         }

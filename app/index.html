@@ -17,21 +17,45 @@
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+    <style>
+        div#dadb1 div.DadbStepContent{
+            background: #ffd6b8;
+        }
+         div#dadb1 .DadbStepHalfHour{
+            border-left: 1px solid #ffd6b8;
+         }
+         div#dadb1 .DadbStepQuarter{
+            border-left: 1px solid #ffd6b8;
+         }
+
+        div#dadb1 .DadbPlannedBlockBody{
+            border-left: 1px solid #ff8229;
+         }
+
+        div#dadb3 div.DadbStepContent{
+            background: #e6f7fd;
+        }
+         div#dadb3 .DadbStepHalfHour{
+            border-left: 1px solid #e6f7fd;
+         }
+         div#dadb3 .DadbStepQuarter{
+            border-left: 1px solid #e6f7fd;
+         }
+
+        div#dadb3 .DadbPlannedBlockBody{
+            border-left: 1px solid #00abe8;
+         }
+    </style>
 </head>
 
 <body>
     <div id="root_parent" class="DadbContent">
 
         <div id="" style="overflow: auto; width: 700px; margin-right: 20px; padding-top: 20px;">
-            <div class="Dadbcode">
-                dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":30,"toolbarId":"tolbar1", "openBlocks":[[390,90],[720,120],[960,180]]}');
-                <br>dadb1.addBlocks('[{"start":990, "value":60}]');
-            </div>
-            <div id="dadb1"></div>
-            <div class="Dadbcode">
-                dadb3 = new Dadb('dadb3', '{"blocksToolbar":[{"value":30,"color": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"},{"value":60,"color": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"},{"value":120,"colorp": "rgb(250, 161, 106)","droppedColor":"rgb(255, 137, 0)"}],"min":360,"max":1170,"step":30,"toolbarId":"tolbar2", "openBlocks":[[390,750]]}');
-            </div>
-            <div id="dadb3"></div>
+
+            <div id="dadb1" style="margin-left: 10px;"></div>
+
+            <div id="dadb3" style="margin-left: 10px;"></div>
 
         </div>
         <br>
@@ -67,13 +91,90 @@
         var dadb1;
         var dadb2;
         var dadb3;
+        var blocksToolbar = [{
+            'code': 'K15',
+            'value': 15,
+            'blockId': 1,
+            'attributes': [{
+                'COL_Toolbar': '#00abe8'
+            }, {
+                'COL_Planned': '#ff7c34'
+            }, {
+                'COL_Unplanned': 'white'
+            }, {
+                'COL_Real': '#7bce5b'
+            }, {
+                'COL_Unreal': 'white'
+            }, {
+                'COL_Added': '#3c8a27'
+            }, {
+                'COL_Deleted': '#ff3d25'
+            }]
+        }, {
+            'code': 'K30',
+            'value': 30,
+            'blockId': 2,
+            'attributes': [{
+                'COL_Toolbar': '#00abe8'
+            }, {
+                'COL_Planned': '#ff7c34'
+            }, {
+                'COL_Unplanned': 'white'
+            }, {
+                'COL_Real': '#7bce5b'
+            }, {
+                'COL_Unreal': 'white'
+            }, {
+                'COL_Added': '#3c8a27'
+            }, {
+                'COL_Deleted': '#ff3d25'
+            }]
+        }, {
+            'code': 'K60',
+            'value': 60,
+            'blockId': 3,
+            'attributes': [{
+                'COL_Toolbar': '#00abe8'
+            }, {
+                'COL_Planned': '#ff7c34'
+            }, {
+                'COL_Unplanned': 'white'
+            }, {
+                'COL_Real': '#7bce5b'
+            }, {
+                'COL_Unreal': 'white'
+            }, {
+                'COL_Added': '#3c8a27'
+            }, {
+                'COL_Deleted': '#ff3d25'
+            }]
+        }, {
+            'code': 'K120',
+            'value': 120,
+            'blockId': 4,
+            'attributes': [{
+                'COL_Toolbar': '#00abe8'
+            }, {
+                'COL_Planned': '#ff7c34'
+            }, {
+                'COL_Unplanned': 'white'
+            }, {
+                'COL_Real': '#7bce5b'
+            }, {
+                'COL_Unreal': 'white'
+            }, {
+                'COL_Added': '#3c8a27'
+            }, {
+                'COL_Deleted': '#ff3d25'
+            }]
+        }];
         $(function () {
             // inicialization - test from APEX (string insted of objects)
-            dadb1 = new Dadb('dadb1', '{"min":360,"max":1170,"step":15,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]],"attToolbarId":"tolbar3", "attributesToolbar":[{"attId":24,"attClass":"fa-cutlery","attCode":"MEAL"}]}');
+            dadb1 = new Dadb('dadb1', '{"min":360,"max":1200,"step":15,"toolbarId":"tolbar1", "openBlocks":[[390,90,1],[720,120,2],[960,180,3]],"attToolbarId":"tolbar3"}');
             dadb1.addBlocks('[{"blockId":"123", "start":420, "value":60, "rangeId":"100", "backgroundColor":"#ff7c34"}]');
 
 
-            dadb3 = new Dadb('dadb3', '{"min":360,"max":1170,"step":15,"toolbarId":"tolbar2", "openBlocks":[[390,90,4],[720,120,5],[960,180,6]]}');
+            dadb3 = new Dadb('dadb3', '{"min":360,"max":1200,"step":15,"toolbarId":"tolbar2", "openBlocks":[[390,90,4],[720,120,5],[960,180,6]], "blocksToolbar":'+JSON.stringify(blocksToolbar)+'}');
             dadb3.addBlocks('[{"blockId":"333", "start":720, "value":15,"rangeId":"210", "backgroundColor":"#ff7c34"}]');
         });
     </script>

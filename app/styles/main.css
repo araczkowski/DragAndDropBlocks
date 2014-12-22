@@ -18,21 +18,40 @@ span.DadbCloser i.DadbHandle {
     position: static;
     bottom: 4px;
     right: 4px;
-    color: #43838c;
+    color: white;
 }
-.DadbStep {
+.DadbStepFullHour,.DadbStepHalfHour,.DadbStepQuarter,.DadbStepStart,.DadbStepEnd {
     float: left;
-    background-color: #e9f4f8;
-    height: 60px;
-    border: 1px solid #43838c;
+    height: 30px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     position: relative;
 }
+
+div.DadbStepEnd{
+    border-right: 2px solid #43838c;
+}
+div.DadbStepStart{
+    border-left: 2px solid #43838c;
+}
+
+.DadbStepFullHour{
+    border-left: 2px solid #43838c;
+}
+
 .DadbStepContent {
     height: 100%;
     height: 0;
+}
+
+.DadbPlannedBlockStart{
+ border-top-left-radius: 5px;
+ border-bottom-left-radius: 5px;
+}
+.DadbPlannedBlockEnd{
+ border-top-right-radius: 5px;
+ border-bottom-right-radius: 5px;
 }
 .DadbTick {
     border: 1px solid transparent;
@@ -47,7 +66,7 @@ span.DadbCloser i.DadbHandle {
 div.DadbSource {
     width: 100%;
     margin-top: 30px;
-    height: 60px;
+    height: 30px;
 }
 div.DadbTemplate {
     margin-right: 10px;
@@ -56,42 +75,31 @@ div.DadbTemplate {
 div.DadbDraggableBlock {
     background: #EEFAA8; //IE8
     background: rgba(238, 250, 168, 0.81);
-    height: 60px;
+    height: 30px;
     font-size: 14px;
     border: 1px solid #43838c;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     z-index: 999;
+    border-radius: 6px;
 }
+
+
 .DadbEmpty {
     border: 0px;
 }
 .DadbEmpty .DadbStepContent {
-    background: #E7FCE1;
-    border: 1px dashed #999;
     height: 96%;
 }
-.DadbPlannedBlockBody .DadbStepContent {
-    background: #cce877;
-}
-div.DadbPlannedBlockBody {
-    border-top: 2px solid green;
-    border-bottom: 2px solid green;
-    border-left: 0px;
-    border-right: 0px;
-}
-div.DadbPlannedBlockStart {
-    border-left: 2px solid green;
-}
-div.DadbPlannedBlockEnd {
-    border-right: 2px solid green;
+.DadbEmpty .DadbStepContentFullHour {
+    border-left: 2px solid #43838c;
 }
 .DadbHighlightOK {
-    border: 2px solid green;
+    border: 2px solid green !important;
 }
 .DadbHighlightNOK {
-    border: 1px solid red;
+    border: 1px solid red !important;
 }
 div.DadbDraggableBlock .DadbHandle {
     cursor: move;
@@ -101,22 +109,8 @@ div.DadbDraggableBlock .DadbHandle {
 }
 .DadbHandle {
     display: table-caption;
-    margin: .2em;
-    color: #43838c;
+    margin: .1em;
+    color: white;
     font-style: normal;
     font-weight: bold;
-}
-/* code */
-
-.Dadbcode {
-    padding: 16px;
-    overflow: auto;
-    font-size: 85%;
-    line-height: 1.45;
-    background-color: #f7f7f7;
-    border-radius: 3px;
-    color: #998;
-    font-style: italic;
-    margin: 20px;
-    width: 90%;
 }

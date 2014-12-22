@@ -149,9 +149,7 @@
                     contentClass = 'DadbStepContentQuarter';
                     stepClass = 'DadbStepQuarter';
                 }
-                console.log(i);
                 if (i === 0) {
-                    console.log('zero');
                     contentClass = contentClass + ' DadbStepContentStart';
                     stepClass = stepClass + ' DadbStepStart';
                 }

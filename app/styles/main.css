@@ -53,10 +53,9 @@ div.DadbStepStart {
     border-bottom-right-radius: 5px;
     border-right: 2px solid black;
 }
-div.DadbPlannedBlockBody  {
+div.DadbPlannedBlockBody {
     box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.75);
 }
-
 .DadbTick {
     border: 1px solid transparent;
     position: absolute;
@@ -109,6 +108,12 @@ div.DadbDraggableBlock .DadbHandle {
 }
 .DadbStepContent .DadbHandle {
     cursor: pointer;
+}
+.DadbStepContent {
+    text-align: left;
+}
+div.DadbStep div {
+    text-align: left;
 }
 .DadbHandle {
     display: table-caption;

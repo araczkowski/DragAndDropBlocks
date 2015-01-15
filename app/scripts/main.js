@@ -1,3 +1,5 @@
+'use strict';
+
 (function (w, $) {
 
     /**
@@ -104,7 +106,7 @@
             min: 0,
             max: 1440,
             step: 15,
-            stepWidth: 20,
+            stepWidth: 17,
             stepLabelDispFormat: _stepLabelDispFormat,
             toolbarId: 'blocksToolbar',
             attToolbarId: '',

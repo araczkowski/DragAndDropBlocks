@@ -117,7 +117,7 @@ div.DadbStep div {
 }
 .DadbHandle {
     display: table-caption;
-    margin: .1em;
+    /*margin: .1em;*/
     color: white;
     font-style: normal;
     font-weight: bold;

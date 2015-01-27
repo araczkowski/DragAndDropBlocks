@@ -3,23 +3,27 @@
     margin-right: 30px;
     margin-left: 30px;
 }
+
 .DadbSteps {
     height: 60px;
     margin-bottom: 5px;
     position: relative;
 }
+
 .DadbStep i.fa {
     position: absolute;
     bottom: 4px;
     right: 4px;
     color: #43838c;
 }
+
 span.DadbCloser i.DadbHandle {
     position: static;
     bottom: 4px;
     right: 4px;
     color: white;
 }
+
 .DadbStepFullHour,
 .DadbStepHalfHour,
 .DadbStepQuarter,
@@ -32,30 +36,38 @@ span.DadbCloser i.DadbHandle {
     box-sizing: border-box;
     position: relative;
 }
+
 div.DadbStepEnd {
     border-right: 2px solid #43838c;
 }
+
 div.DadbStepStart {
     border-left: 2px solid #43838c;
 }
+
 .DadbStepFullHour {
     border-left: 2px solid #43838c;
 }
+
 .DadbStepContent {
     height: 0px;
 }
+
 .DadbPlannedBlockStart {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
+
 .DadbPlannedBlockEnd {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     border-right: 2px solid black;
 }
+
 div.DadbPlannedBlockBody {
-    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.75);
 }
+
 .DadbTick {
     border: 1px solid transparent;
     position: absolute;
@@ -71,10 +83,12 @@ div.DadbSource {
     margin-top: 30px;
     height: 30px;
 }
+
 div.DadbTemplate {
     margin-right: 20px;
     float: left;
 }
+
 div.DadbDraggableBlock {
     background: #EEFAA8; //IE8
     background: rgba(238, 250, 168, 0.81);
@@ -86,38 +100,48 @@ div.DadbDraggableBlock {
     box-sizing: border-box;
     z-index: 999;
     border-radius: 5px;
-    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.75);
 }
+
 .DadbEmpty {
     border: 0px;
 }
+
 .DadbEmpty .DadbStepContent {
     height: 96%;
 }
+
 .DadbEmpty .DadbStepContentFullHour {
     border-left: 2px solid #43838c;
 }
+
 .DadbHighlightOK {
     border: 2px solid green !important;
 }
+
 .DadbHighlightNOK {
     border: 1px solid red !important;
 }
+
 div.DadbDraggableBlock .DadbHandle {
     cursor: move;
 }
+
 .DadbStepContent .DadbHandle {
     cursor: pointer;
 }
+
 .DadbStepContent {
     text-align: left;
 }
+
 div.DadbStep div {
     text-align: left;
 }
+
 .DadbHandle {
     display: table-caption;
-    /*margin: .1em;*/
+    margin-top: 1px;
     color: white;
     font-style: normal;
     font-weight: bold;

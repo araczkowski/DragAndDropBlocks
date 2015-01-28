@@ -37,13 +37,13 @@ span.DadbCloser i.DadbHandle {
     position: relative;
 }
 
-div.DadbStepEnd {
+/*div.DadbStepEnd {
     border-right: 2px solid #43838c;
 }
 
 div.DadbStepStart {
     border-left: 2px solid #43838c;
-}
+}*/
 
 .DadbStepFullHour {
     border-left: 2px solid #43838c;

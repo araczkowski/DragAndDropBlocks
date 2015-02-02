@@ -36,7 +36,6 @@ span.DadbCloser i.DadbHandle {
     box-sizing: border-box;
     position: relative;
 }
-
 /*div.DadbStepEnd {
     border-right: 2px solid #43838c;
 }
@@ -63,10 +62,9 @@ div.DadbStepStart {
     border-bottom-right-radius: 5px;
     border-right: 2px solid black;
 }
-
-div.DadbPlannedBlockBody {
+/*div.DadbPlannedBlockBody {
     box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.75);
-}
+}*/
 
 .DadbTick {
     border: 1px solid transparent;
@@ -145,4 +143,8 @@ div.DadbStep div {
     color: white;
     font-style: normal;
     font-weight: bold;
+}
+
+div.DadbStepEnd {
+    border-right: 2px solid #43838c !important;
 }

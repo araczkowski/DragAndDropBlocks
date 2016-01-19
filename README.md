@@ -11,7 +11,7 @@ Live example at jsFiddle http://jsfiddle.net/araczkowski/t3vj8wjr/embedded/resul
 TODO
 ===========================
 
-develop the plugin
+timeline
 
 
 How To Start (to develop the plugin)

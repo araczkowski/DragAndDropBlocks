@@ -12,7 +12,8 @@ TODO
 ===========================
 
 timeline
-
+http://bl.ocks.org/bunkat/1962173
+Swimlane Chart using d3.js
 
 How To Start (to develop the plugin)
 ===========================

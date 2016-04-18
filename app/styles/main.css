@@ -88,7 +88,7 @@ div.DadbTemplate {
 }
 
 div.DadbDraggableBlock {
-    background: #EEFAA8; //IE8
+    background: #EEFAA8; 
     background: rgba(238, 250, 168, 0.81);
     height: 30px;
     font-size: 14px;
@@ -99,6 +99,15 @@ div.DadbDraggableBlock {
     z-index: 999;
     border-radius: 5px;
     box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.75);
+}
+
+div.DadbDraggableBlock.Stamp{
+    -webkit-box-shadow: 0px 2px 0px #84261a;
+    -moz-box-shadow: 0px 2px 0px #84261a;
+    box-shadow: 0px 2px 0px #84261a;
+    position:relative;
+    top:2px;
+    opacity: 0.5;
 }
 
 .DadbEmpty {

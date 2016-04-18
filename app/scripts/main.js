@@ -24,25 +24,6 @@
             return Math.abs(steps) % 60 === 0 ? ((hours < 10 && hours >= 0) ? '0' : '') + hours : '';
         };
         var _blocksToolbar = [{
-            'code': 'K15',
-            'value': 15,
-            'blockId': 1,
-            'attributes': [{
-                'COL_Toolbar': '#ff7c34'
-            }, {
-                'COL_Planned': '#ff7c34'
-            }, {
-                'COL_Unplanned': 'white'
-            }, {
-                'COL_Real': '#7bce5b'
-            }, {
-                'COL_Unreal': 'white'
-            }, {
-                'COL_Added': '#3c8a27'
-            }, {
-                'COL_Deleted': '#ff3d25'
-            }]
-        }, {
             'code': 'K30',
             'value': 30,
             'blockId': 2,
@@ -288,6 +269,7 @@
 
             _createDroppable();
             _createDraggable();
+	    _createSelectable();
         }
 
         function _createAdditionalAttributesForBlocksToolbar() {
@@ -455,7 +437,48 @@
             $('div.draggable, .DadbSteps .DadbStep').disableSelection();
         }
 
+      	//block as stamp
+      	function  _createSelectable(){
+      		$('div.DadbDraggableBlock').unbind('dblclick').dblclick(function(e) {
+      			e.stopPropagation();
+      			if ($(this).hasClass("Stamp")) {
+      				//remove class stamp from any div
+      				$('div.DadbDraggableBlock').removeClass("Stamp");
+      				$(this).animate({bottom: "3px", left: "2px"}, 350, 'swing');
+      			}
+      			else {
+      				//remove class stamp from any div
+      				$('div.DadbDraggableBlock').removeClass("Stamp");
+      				//add "stamp" to clicked div
+      				$(this).addClass("Stamp").animate({bottom: "2px", left: "2px"}, 350, 'swing');
+              // Start dragging this block
+              $(document).mousemove(Dragging);
+              $dragHelper = $(this).clone().css('position', 'absolute').appendTo('body');
+              // Fire the dragging event to update the helper's position
+              Dragging();
+              // If the user clicks anything outside the drop area,
+              // stop dragging.
+              $(document).click(StopDrag);
 
+              //
+              // Make our drop area clickable
+              $('div.DadbStep').click(function(){
+                  // Only do something is an element is being dragged
+                  if($dragHelper){
+                      // when the block is dropped goes here.
+                      $dragHelper.clone().css({
+                          position: 'relative',
+                          top: '0px',
+                          left: '0px'
+                      }).appendTo(this);
+
+                      // Stop dragging if an element was successfully dropped.
+                      StopDrag();
+                  }
+              });
+      			}
+      		});
+      	}
 
         // to get array with currently hovered divs
         function _getHoveredDivs(firstElement, blockDiv, className, nSteps) {
@@ -659,6 +682,38 @@
     };
 
 })(window, jQuery);
+
+// Stamp
+var $dragHelper = null;
+var lastX = 0;
+var lastY = 0;
+
+// Fires on mousemove and updates element position
+function Dragging(e){
+    // Only update last known mouse position if an event object
+    // was passed through (mousemove event).
+    if(e){
+        lastX = e.pageX;
+        lastY = e.pageY;
+    }
+
+    // If an element is being dragged, update the helper's position.
+    if($dragHelper)
+        $dragHelper.css({ top: lastY, left: lastX });
+}
+
+function StopDrag(){
+    // Remove the helper from the DOM and clear the variable.
+    $dragHelper.remove();
+    $dragHelper = null;
+
+    // Unbind the document click event which is now useless.
+    $(document).unbind('click', StopDrag);
+
+    //remove class stamp from any div
+    $('div.DadbDraggableBlock').removeClass("Stamp");
+}
+
 
 
 // special functionality for IE8

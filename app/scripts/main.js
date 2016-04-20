@@ -639,11 +639,14 @@
                 bSteps[i].attr('data-block-id', blockId || guid);
                 bSteps[i].attr('data-block-selector', 'DadbPlannedBlock_' + bSteps[0].attr('id'));
                 bSteps[i].attr('data-color', color);
-                bSteps[i].css('background', color);
+                bSteps[i].css({
+                    'background-clip': 'border-box ',
+                    'background': color
+                });
+                //background-clip -IE11 renders white lines when border-radius is applied 
 
                 if (i === 0) {
                     bSteps[i].addClass('DadbPlannedBlockStart');
-
                     bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function(event) {
                         event.stopPropagation();
                         _removeBlock(this);

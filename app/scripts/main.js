@@ -27,6 +27,7 @@
 			'code': 'K30',
 			'value': 30,
 			'blockId': 2,
+			'class': 'Kids',
 			'attributes': [{
 				'COL_Toolbar': '#ff7c34'
 			}, {
@@ -46,6 +47,7 @@
 			'code': 'K60',
 			'value': 60,
 			'blockId': 3,
+			'class': 'Kids',
 			'attributes': [{
 				'COL_Toolbar': '#ff7c34'
 			}, {
@@ -65,6 +67,7 @@
 			'code': 'K120',
 			'value': 120,
 			'blockId': 4,
+			'class': 'Kids',
 			'attributes': [{
 				'COL_Toolbar': '#ff7c34'
 			}, {
@@ -96,7 +99,10 @@
 			openBlocks: [
 				[30, 60],
 				[600, 90]
-			]
+			],
+			dragDiv: '',
+			lastX: 0,
+			lastY: 0
 		};
 
 		var _onAddBlock = null,
@@ -110,7 +116,7 @@
 			}
 			_build();
 			_createBlocksToolbar();
-			_createAdditionalAttributesForBlocksToolbar();
+			//_createAdditionalAttributesForBlocksToolbar();
 			_openBlocks();
 		}
 
@@ -152,7 +158,11 @@
 					'html': '<span class="DadbTick">' + _options.stepLabelDispFormat(stepValue) + '</span><div class="DadbStepContent ' + contentClass + '"></div></div>'
 				}).appendTo(eSteps);
 			}
-			$('#steps_' + parentId).append('<div><span class="DadbTick">' + _options.stepLabelDispFormat(_options.min + (nSteps * _options.step)) + '</span></div>').width(nSteps * _options.stepWidth) + 'px';
+
+			$('#steps_' + parentId).append('<div><span class="DadbTick">' + _options.stepLabelDispFormat(_options.min + (nSteps * _options.step)) + '</span></div>');
+
+			//
+			$('#steps_' + parentId).width(nSteps * _options.stepWidth) + 'px';
 		}
 
 		function _mergeOptions() {
@@ -216,7 +226,7 @@
 			for (var i = 0; i < blocksArray.length; i++) {
 				var block = $('<div/>', {
 					'id': 'block' + blocksArray[i].value,
-					'class': 'DadbDraggableBlock DadbTemplate',
+					'class': 'DadbDraggableBlock DadbTemplate '+ blocksArray[i].class,//class,
 					'data-block-id': blocksArray[i].blockId,
 					'data-code': blocksArray[i].code,
 					'data-name': blocksArray[i].name,
@@ -260,29 +270,24 @@
 
 		function _createBlocksToolbar() {
 			if ($('#' + _options.toolbarId).length === 0) {
-
 				$('#' + parentId).parent().append('<div id="' + _options.toolbarId + '" class="DadbSource"></div>');
 			}
 
 			_addBlocksToTolbar('#' + _options.toolbarId, _options.blocksToolbar);
-
 			_createDroppable();
 			_createDraggable();
-			//_createSelectable();
+			_createStampable();
 		}
 
 		function _createAdditionalAttributesForBlocksToolbar() {
 
 			if (_options.attToolbarId.length > 0) {
-
 				if ($('#' + _options.attToolbarId).length === 0) {
 					$('#' + parentId).parent().append('<div id="' + _options.attToolbarId + '" class="DadbDraggableBlocksAttributes"></div>');
 				} else {
 					$('#' + _options.attToolbarId).addClass('DadbDraggableBlocksAttributes');
 				}
-
 				_addBlocksAttrToTolbar('#' + _options.attToolbarId, _options.attributesToolbar);
-
 				_createDraggableAtt();
 				_createDroppableAtt();
 			}
@@ -347,8 +352,70 @@
 					}
 				}
 			});
+		}
+
+		function _onOver(event, div) {
+			// only if elemet is overed
+			if (!div) {
+				return;
+			}
+
+			// take the properties of the overed element
+			var blockDataValue;
+			var blockParentId;
+			var targetDiv;
+
+			try {
+				//stamp
+				blockDataValue = div.attr('data-value');
+				blockParentId = div.attr('data-parentId');
+
+				targetDiv = $(event.currentTarget);
+				//$(event.toElement).closest('div.DadbStep');
+			} catch (e) {
+				try {
+					// drag and drop
+					blockDataValue = div.draggable.attr('data-value');
+					blockParentId = div.draggable.attr('data-parentId');
+					targetDiv = $(this);
+				} catch (e) {
+					return;
+				}
+			}
+
+			// only blocks
+			if (typeof (blockDataValue) === 'undefined') {
+				$(div.helper).css('color', 'red');
+				return;
+			}
+
+			var className;
+			//
+			$('div.DadbStep').removeClass('DadbHighlightNOK');
+			$('div.DadbStep').removeClass('DadbHighlightOK');
 
 
+
+			//allow the drop only for the blocks from the same instance
+			if (blockParentId === parentId) {
+				//
+				var nSteps = (blockDataValue / _options.step);
+
+				var list = _getHoveredDivs(targetDiv, div, 'DadbStep', nSteps);
+				var list2 = _getHoveredDivs(targetDiv, div, 'DadbEmpty', nSteps);
+
+				if (nSteps !== list2.length) {
+					className = 'DadbHighlightNOK';
+				} else {
+					className = 'DadbHighlightOK';
+				}
+
+				list.forEach(function (entry) {
+					entry.addClass(className);
+				});
+			} else {
+				$('#' + parentId + ' .DadbStep').addClass('DadbHighlightNOK');
+			}
 		}
 
 		function _createDroppable(el) {
@@ -356,42 +423,8 @@
 			$(el || '#steps_' + parentId + '.DadbSteps .DadbStep').droppable({
 				tolerance: 'pointer',
 				revert: true,
-				over: function (event, div) {
-
-					// only blocks
-					if (typeof (div.draggable.attr('data-value')) === 'undefined') {
-						$(div.helper).css('color', 'red');
-						return;
-					}
-
-					var className;
-					//
-					$('div.DadbStep').removeClass('DadbHighlightNOK');
-					$('div.DadbStep').removeClass('DadbHighlightOK');
-
-
-
-					//allow the drop only for the blocks from the same instance
-					var blockParentId = div.draggable.attr('data-parentId');
-					if (blockParentId === parentId) {
-						//
-						var nSteps = (div.draggable.attr('data-value') / _options.step);
-						var list = _getHoveredDivs($(this), div, 'DadbStep', nSteps);
-						var list2 = _getHoveredDivs($(this), div, 'DadbEmpty', nSteps);
-						if (nSteps !== list2.length) {
-							className = 'DadbHighlightNOK';
-						} else {
-							className = 'DadbHighlightOK';
-						}
-
-						list.forEach(function (entry) {
-							entry.addClass(className);
-						});
-					} else {
-						$('#' + parentId + ' .DadbStep').addClass('DadbHighlightNOK');
-					}
-				},
-				function (ev, div) {
+				over: _onOver,
+				drop: function (ev, div) {
 					$('div.DadbStep').removeClass('DadbHighlightNOK');
 					$('div.DadbStep').removeClass('DadbHighlightOK');
 
@@ -437,105 +470,116 @@
 		}
 
 		//STAMP START
-		/*var $dragHelper = null;
-		var lastX = 0;
-		var lastY = 0;
-
 		// Fires on mousemove and updates element position
-		function dragging(e) {
+		function _startStampDrag(e) {
 			// Only update last known mouse position if an event object
 			// was passed through (mousemove event).
 			if (e) {
-				lastX = e.pageX;
-				lastY = e.pageY;
+				_options.lastX = e.pageX;
+				_options.lastY = e.pageY;
 			}
 
 			// If an element is being dragged, update the helper's position.
-			if ($dragHelper) {
-				$dragHelper.css({
-					top: lastY,
-					left: lastX
+			if (_options.dragDiv) {
+				_options.dragDiv.css({
+					top: _options.lastY,
+					left: _options.lastX
 				});
 			}
 		}
 
-		function stopDrag() {
+		function _stopStampDrag() {
 			// Remove the helper from the DOM and clear the variable.
-			$dragHelper.remove();
-			$dragHelper = null;
-
-			// Unbind the document click event which is now useless.
-			$(document).unbind('click', stopDrag);
-
-			//remove class stamp from any div
-			$('div.DadbDraggableBlock').removeClass('Stamp');
+			if (_options.dragDiv) {
+				_options.dragDiv.remove();
+				_options.dragDiv = null;
+			}
+			//remove class stamp from this range toolbar
+			$('div.DadbDraggableBlock[data-parentid="' + parentId + '"]').removeClass('Stamp');
+			//unbing the click from the block's range
+			$('#steps_' + parentId + '.DadbSteps .DadbStep').unbind('click');
 		}
-    */
 
 		//
-		function _createSelectable() {
-			$('div.DadbDraggableBlock').unbind('dblclick').dblclick(function (e) {
-				e.stopPropagation();
+		function _createStampable() {
+			// stop when cancel is clicked
+			$(document).keyup(function (e) {
+				// esc
+				if (e.keyCode === 27) {
+					_stopStampDrag();
+					// Remove all the "FlyingStamps" from body
+					$('div.DadbDraggableBlock.FlyingStamp').remove();
+				}
+			});
+
+			// hover efect
+			$('#steps_' + parentId + '.DadbSteps .DadbStep').mouseover(function (event) {
+				_onOver(event, _options.dragDiv);
+			});
+			$('#steps_' + parentId + '.DadbSteps .DadbStep').mouseout(function (event) {
+				$('div.DadbStep').removeClass('DadbHighlightNOK');
+				$('div.DadbStep').removeClass('DadbHighlightOK');
+			});
+
+
+			// when click on block in blocks toolbar - take the block as a stamp
+			$('div.DadbDraggableBlock[data-parentid="' + parentId + '"]').unbind('click').click(function (e) {
+				//e.stopPropagation();
+				// set the current mouse possition
+				if (e) {
+					_options.lastX = e.pageX;
+					_options.lastY = e.pageY;
+				}
+
 				if ($(this).hasClass('Stamp')) {
-					//remove class stamp from any div
-					$('div.DadbDraggableBlock').removeClass('Stamp');
-					$(this).animate({
-						bottom: '3px',
-						left: '2px'
-					}, 350, 'swing');
+					// sipmply put the stamp back
+					_stopStampDrag();
 				} else {
-					//remove class stamp from any div
-					$('div.DadbDraggableBlock').removeClass('Stamp');
-					//add 'stamp' to clicked div
-					$(this).addClass('Stamp').animate({
-						bottom: '2px',
-						left: '2px'
-					}, 350, 'swing');
+					//switch stamps
+					if (_options.dragDiv) {
+						_stopStampDrag();
+					}
+					// take new stamplowe the select block as a stamp only if it not selected
+					$(this).addClass('Stamp');
 					// Start dragging this block
-					$(document).mousemove(dragging);
-					$dragHelper = $(this).clone().css('position', 'absolute').appendTo('body');
+					$(document).mousemove(_startStampDrag);
+					_options.dragDiv = $(this).clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
 					// Fire the dragging event to update the helper's position
-					dragging();
-					// If the user clicks anything outside the drop area,
-					// stop dragging.
-					$(document).click(stopDrag);
+					_startStampDrag();
 
 					//
 					// Make our drop area clickable
-					$('div.DadbStep').click(function () {
+					$('#steps_' + parentId + '.DadbSteps .DadbStep').unbind('click').click(function () {
 						// Only do something is an element is being dragged
-						if ($dragHelper) {
-							// when the block is dropped goes here.
-							// $dragHelper.clone().css({
-							// 	position: 'relative',
-							// 	top: '0px',
-							// 	left: '0px'
-							// }).appendTo(this);
-
+						if (_options.dragDiv) {
+							// when` the block is dropped ...
+							var clickedStep = $(this);
 							//allow the drop only for the blocks from the same instance
-							var blockParentId = $dragHelper.attr('data-parentId');
+							var blockParentId = _options.dragDiv.attr('data-parentId');
 							if (blockParentId === parentId) {
-								var nSteps = ($dragHelper.attr('data-value') / _options.step);
-								var bSteps = _getHoveredDivs($(this), $dragHelper, 'DadbEmpty', nSteps);
+								var nSteps = (_options.dragDiv.attr('data-value') / _options.step);
+								var bSteps = _getHoveredDivs(clickedStep, _options.dragDiv, 'DadbEmpty', nSteps);
 								if (bSteps.length !== nSteps) {
-									$dragHelper.effect('shake', {}, 300);
+									_options.dragDiv.effect('shake', {}, 300);
 									return;
 								}
-								_addSteps(bSteps, $dragHelper.attr('data-value'), $dragHelper.attr('data-color'), $dragHelper.attr('data-block-id'), $dragHelper.attr('data-att-id'), $dragHelper.attr('data-att-class'));
-
+								_addSteps(bSteps, _options.dragDiv.attr('data-value'), _options.dragDiv.attr('data-color'), _options.dragDiv.attr('data-block-id'), _options.dragDiv.attr('data-att-id'), _options.dragDiv.attr('data-att-class'));
 							}
-
 							// Stop dragging if an element was successfully dropped.
-							//StopDrag();
+							//TODO
 						}
 					});
+
+					// Stop dragging if the user clicks anything outside the drop area,
+					//$(document).click(_stopStampDrag);
 				}
 			});
 		}
-		//STAMP STOP
+		//STAMP END
 
 		// to get array with currently hovered divs
 		function _getHoveredDivs(firstElement, blockDiv, className, nSteps) {
+
 			var hoveredDivs = [];
 			var id = firstElement.attr('id');
 			id = id.substring(id.indexOf('_') + 1);
@@ -575,7 +619,8 @@
 				if (i === 0) {
 					bSteps[i].addClass('DadbPlannedBlockStart');
 
-					bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function () {
+					bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function (event) {
+						//event.stopPropagation();
 						_removeBlock(this);
 					});
 					bSteps[i].attr('data-value', value);
@@ -732,6 +777,14 @@
 			_createDroppable();
 			return this;
 		};
+
+		/**
+		 * Return the info about dragging mode
+		 */
+		this.isStamp = function () {
+			return _options.dragDiv;
+		};
+
 		_init();
 	};
 
@@ -793,5 +846,10 @@ $(function () {
 
 		return false;
 	};
+
+	// $(document).click(function (event) {
+	// 	console.log(event.target);
+	// });
+
 
 });

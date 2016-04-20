@@ -51,11 +51,29 @@
     div#dadb3 .DadbPlannedBlockBody {
       border-left: 1px solid #00abe8;
     }
+
+ .DadbDraggableBlock.Stamp.Staff:after{
+      content: "\f182";
+      font-family: FontAwesome;
+      right:3px;
+      position:absolute;
+      top:0;
+      color: #fff;
+    }
+
+  .DadbDraggableBlock.Stamp.Kids:after{
+      content: "\f1ae";
+      font-family: FontAwesome;
+      right:3px;
+      position:absolute;
+      color: #fff;
+      top:14px;
+    }
   </style>
 </head>
 
 <body>
-  <a href="javascript:addNew();">test</a>
+  <!-- <a href="javascript:addNew();">test</a> -->
   <div id="root_parent" class="DadbContent">
 
     <div id="models" style="overflow: auto; width: 1200px; margin-right: 20px; padding-top: 20px;">
@@ -67,12 +85,12 @@
     <br>
     <br>
 
-    <fieldset style="width: 30%; float: left; height: 80px;">
-      <legend>tolbar1:</legend>
+    <fieldset style="width: 45%; float: left; height: 80px;">
+      <legend>Kids:</legend>
       <div id="tolbar1"></div>
     </fieldset>
-    <fieldset style="width: 30%; float: left; height: 80px;">
-      <legend>tolbar2:</legend>
+    <fieldset style="width: 45%; float: left; height: 80px;">
+      <legend>Staff:</legend>
       <div id="tolbar2"></div>
     </fieldset>
     <!--fieldset style="width: 15%; float: left; height: 80px;">
@@ -101,6 +119,7 @@
       'code': 'K30',
       'value': 30,
       'blockId': 1,
+      'class': 'Staff',
       'attributes': [{
         'COL_Toolbar': '#00abe8'
       }, {
@@ -120,6 +139,7 @@
       'code': 'K60',
       'value': 60,
       'blockId': 1,
+      'class': 'Staff',
       'attributes': [{
         'COL_Toolbar': '#00abe8'
       }, {
@@ -139,6 +159,7 @@
       'code': 'K120',
       'value': 120,
       'blockId': 1,
+      'class': 'Staff',
       'attributes': [{
         'COL_Toolbar': '#00abe8'
       }, {
@@ -166,18 +187,18 @@
     });
     var id = 5;
 
-    function addNew() {
-      var curId = 'dadb' + id++;
-      var models = $('#models');
-      var model = $('<div/>', {
-        'id': curId,
-        'style': 'margin-left: 10px',
-      }).appendTo(models);
-
-      var theInstructions = curId +'= new Dadb("'+curId+'",\'{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[420,715,1]],"attToolbarId":"tolbar3"}\');';
-      var f = new Function(theInstructions);
-      return (f());
-    }
+    // function addNew() {
+    //   var curId = 'dadb' + id++;
+    //   var models = $('#models');
+    //   var model = $('<div/>', {
+    //     'id': curId,
+    //     'style': 'margin-left: 10px',
+    //   }).appendTo(models);
+    //
+    //   var theInstructions = curId +'= new Dadb("'+curId+'",\'{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[420,715,1]],"attToolbarId":"tolbar3"}\');';
+    //   var f = new Function(theInstructions);
+    //   return (f());
+    // }
 
   </script>
 

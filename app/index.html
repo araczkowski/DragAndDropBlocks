@@ -80,17 +80,19 @@
             <br>
             <li><strong>drag&drop mode</strong> - move the draggable block by clicking with the mouse on the arrows <i class="fa fa-arrows" aria-hidden="true"></i> and dragging it to the empty space on the time range..</li>
             <li><strong>click mode</strong> - select the block by clicking with the mouse on it and navigate to the empty space on the time range, now you can put the selected block on the range. You can do this put many times - you can use it as a stamp.
-                Use the escape kay to remove the selected block or click again on the selected block, or click on anather block to change the selection etc..</li>
+                Use the escape kay to remove the selected block or click again on the selected block, or click on the block's toolbar to drop it, or click on anather block to change the selection etc..</li>
         </p>
     </div>
     <div id="root_parent" class="DadbContent">
 
         <div id="models" style="overflow: auto; width: 1200px; margin-right: 20px; padding-top: 20px;">
-
+           <p>Day 1</p>
             <div class="typeKid" id="dadb1" style="margin-left: 10px;"></div>
             <div class="typeStaff" id="dadb3" style="margin-left: 10px;"></div>
-            <div class="typeKid" id="dadb5" style="margin-left: 10px;"></div>
 
+            <p>Day 2</p>
+            <div class="typeKid" id="dadb5" style="margin-left: 10px;"></div>
+            <div class="typeStaff" id="dadb7" style="margin-left: 10px;"></div>
         </div>
         <br>
         <br>
@@ -154,7 +156,8 @@
             dadb3 = new Dadb('dadb3', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar) + '}');
             //dadb3.addBlocks('[{"blockId":"333", "start":720, "value":15,"rangeId":"210", "backgroundColor":"#ff7c34"}]');
 
-            //dadb5 = new Dadb('dadb5', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]'+ '}');
+            dadb5 = new Dadb('dadb5', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb7 = new Dadb('dadb7', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
 
         });
         var id = 5;

@@ -23,31 +23,6 @@
 			var hours = Math.floor(Math.abs(steps) / 60);
 			return Math.abs(steps) % 60 === 0 ? ((hours < 10 && hours >= 0) ? '0' : '') + hours : '';
 		};
-		var _blocksToolbar = [{
-			'code': 'K30',
-			'value': 30,
-			'blockId': 2,
-			'class': 'Kids',
-			'attributes': [{
-				'COL_Toolbar': '#ff7c34'
-			}]
-		}, {
-			'code': 'K60',
-			'value': 60,
-			'blockId': 3,
-			'class': 'Kids',
-			'attributes': [{
-				'COL_Toolbar': '#ff7c34'
-			}]
-		}, {
-			'code': 'K120',
-			'value': 120,
-			'blockId': 4,
-			'class': 'Kids',
-			'attributes': [{
-				'COL_Toolbar': '#ff7c34'
-			}]
-		}];
 
 		var _options = {
 			min: 0,
@@ -57,7 +32,7 @@
 			stepLabelDispFormat: _stepLabelDispFormat,
 			toolbarId: 'blocksToolbar',
 			attToolbarId: '',
-			blocksToolbar: _blocksToolbar,
+			blocksToolbar: '',
 			openBlocks: [],
 			dragDiv: '',
 			lastX: 0,
@@ -118,10 +93,8 @@
 				}).appendTo(eSteps);
 			}
 
-			$('#steps_' + parentId).append('<div><span class="DadbTick">' + _options.stepLabelDispFormat(_options.min + (nSteps * _options.step)) + '</span></div>');
-
-			//
-			$('#steps_' + parentId).width(nSteps * _options.stepWidth) + 'px';
+			eSteps.append('<div><span class="DadbTick">' + _options.stepLabelDispFormat(_options.min + (nSteps * _options.step)) + '</span></div>');
+			eSteps.width(nSteps * _options.stepWidth);
 		}
 
 		function _mergeOptions() {
@@ -212,10 +185,13 @@
 			if ($('#' + _options.toolbarId).length === 0) {
 				$('#' + parentId).parent().append('<div id="' + _options.toolbarId + '" class="DadbSource"></div>');
 			}
-			_addBlocksToTolbar('#' + _options.toolbarId, _options.blocksToolbar);
-			_createDroppable();
-			_createDraggable();
-			_createStampable();
+
+			if (_options.blocksToolbar.lenght > 0) {
+				_addBlocksToTolbar('#' + _options.toolbarId, _options.blocksToolbar);
+				_createDroppable();
+				_createDraggable();
+				_createStampable();
+			}
 		}
 
 		function _onOver(event, div) {
@@ -274,11 +250,11 @@
 
 
 					for (var i = 0; i < l; i++) {
-						if (i == 0) {
+						if (i === 0) {
 							hoveredDivs.DadbStep[i].addClass(className + 'start');
 						}
 						hoveredDivs.DadbStep[i].addClass(className);
-						if (i == l - 1) {
+						if (i === l - 1) {
 							hoveredDivs.DadbStep[i].addClass(className + 'end');
 						}
 					}
@@ -362,6 +338,7 @@
 			}
 		}
 
+
 		function _stopStampDrag() {
 			// Remove the helper from the DOM and clear the variable.
 			if (_options.dragDiv) {
@@ -392,9 +369,18 @@
 				_onOver(event, _options.dragDiv);
 			});
 
+			// when click on block's toolbar
+			// TODO parent - check if it is like this on prod!
+			$('#' + _options.toolbarId).parent().unbind('click').click(function () {
+				if (_options.dragDiv) {
+					_removeHighlight();
+					_stopStampDrag();
+				}
+			});
+
 			// when click on block in blocks toolbar - take the block as a stamp
 			$('div.DadbDraggableBlock[data-parentid="' + parentId + '"]').unbind('click').click(function (e) {
-				//e.stopPropagation();
+				e.stopPropagation(); //important! see below
 				_removeHighlight();
 				// set the current mouse possition
 				if (e) {
@@ -479,15 +465,6 @@
 			$('div.DadbStep').removeClass('DadbHighlightNOK').removeClass('DadbHighlightOK').removeClass('DadbHighlightOKstart').removeClass('DadbHighlightOKend').removeClass('DadbHighlightNOKstart').removeClass('DadbHighlightNOKend');
 		}
 
-		function _addStepAtt(bStep, attId, attClass) {
-			$('<i/>', {
-				'class': attClass + ' fa',
-				'data-att-id': attId,
-				'data-att-class': attClass
-			}).appendTo(bStep);
-		}
-
-
 		function _addSteps(bSteps, value, color, blockId, attId, attClass) {
 			//
 			// this steps were already planned
@@ -496,39 +473,31 @@
 			}
 
 			var guid = _getGuid();
+			var firstStep;
 
 			for (var i = 0; i < bSteps.length; i++) {
 				bSteps[i].removeClass('DadbEmpty');
 				bSteps[i].addClass('DadbPlannedBlockBody');
-				//bSteps[i].addClass('DadbPlannedBlock_' + bSteps[0].attr('id'));
 				bSteps[i].attr('data-block-id', blockId || guid);
 				bSteps[i].attr('data-block-selector', 'DadbPlannedBlock_' + bSteps[0].attr('id'));
 				bSteps[i].attr('data-color', color);
-				bSteps[i].css({
-					'background-clip': 'border-box ',
-					'background': color
-				});
-				//background-clip -IE11 renders white lines when border-radius is applied 
+				bSteps[i].css('background', color);
 
 				if (i === 0) {
 					bSteps[i].addClass('DadbPlannedBlockStart');
-					bSteps[i].find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function (event) {
-						event.stopPropagation();
-						_removeBlock(this);
-					});
 					bSteps[i].attr('data-value', value);
+					firstStep = bSteps[i];
 				}
 
 				if (i === bSteps.length - 1) {
 					bSteps[i].addClass('DadbPlannedBlockEnd');
-					if (typeof (attId) !== 'undefined') {
-						if (attId.length) {
-							//meal is hardcoded
-							_addStepAtt(bSteps[i], attId, attClass);
-						}
-					}
 				}
 			}
+			// add option to remove the block from timeline
+			firstStep.find('div').prepend('<span class="DadbCloser"><i class="DadbHandle fa fa-times"></i></span>').on('click', function (event) {
+				event.stopPropagation();
+				_removeBlock(this);
+			});
 
 			if (typeof (_onAddBlock) === 'function') {
 				_onAddBlock();
@@ -542,14 +511,16 @@
 			var blocks = $('[data-block-selector=' + selector + ']');
 			blocks.removeClass('DadbPlannedBlockBody').removeClass('DadbPlannedBlockStart').removeClass('DadbPlannedBlockEnd').addClass('DadbEmpty');
 			blocks.css('background-color', '');
-			//$(selector + ' span.DadbCloser').remove();
-      blocks.removeAttr('data-value');
-      blocks.removeAttr('data-block-id');
-      blocks.removeAttr('data-block-selector');
-      blocks.removeAttr('data-color');
+			blocks.removeAttr('data-value');
+			blocks.removeAttr('data-block-id');
+			blocks.removeAttr('data-block-selector');
+			blocks.removeAttr('data-color');
 			$('#' + id + '> div.DadbStepContent').empty();
 			$('#' + id + '>' + ' div.DadbStepContent').unbind('click');
 			_createDroppable($(selector));
+			_removeHighlight();
+
+
 
 			if (typeof (_onDeleteBlock) === 'function') {
 				_onDeleteBlock();
@@ -696,7 +667,6 @@ $(function () {
 			}
 		};
 	}
-
 	// to have info/status on revert
 	// http://stackoverflow.com/questions/1853230/jquery-ui-draggable-event-status-on-revert
 	$.ui.draggable.prototype._mouseStop = function (event) {
@@ -726,10 +696,13 @@ $(function () {
 			this._trigger('stop', event);
 			this._clear();
 		}
-
 		return false;
 	};
-  //version
-  $(document.body).append('<div id="version">v Alfa2</div>');
-  $('#version').css({'bottom':'0','right':'0','position':'fixed'});
+	//version
+	$(document.body).append('<div id="version">v Alfa4</div>');
+	$('#version').css({
+		'bottom': '0',
+		'right': '0',
+		'position': 'fixed'
+	});
 });

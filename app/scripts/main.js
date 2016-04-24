@@ -1,5 +1,10 @@
 'use strict';
 
+var gDadb = {
+	dragDiv: ''
+};
+
+
 (function (w, $) {
 
 	/**
@@ -31,10 +36,9 @@
 			stepWidth: 17,
 			stepLabelDispFormat: _stepLabelDispFormat,
 			toolbarId: 'blocksToolbar',
-			attToolbarId: '',
-			blocksToolbar: '',
+			attToolbarId: [],
+			blocksToolbar: [],
 			openBlocks: [],
-			dragDiv: '',
 			lastX: 0,
 			lastY: 0,
 			hoveredDivs: {}
@@ -104,9 +108,8 @@
 			if (typeof (userOptions) === 'string') {
 				userOptions = JSON.parse(userOptions);
 			}
-
 			if (typeof (userOptions.blocksToolbar) !== 'undefined') {
-				if (typeof (userOptions.blocksToolbar) === 'string') {
+				if (typeof (blocksToolbar.blocksToolbar) === 'string') {
 					userOptions.blocksToolbar = JSON.parse(userOptions.blocksToolbar);
 				}
 			}
@@ -186,12 +189,12 @@
 				$('#' + parentId).parent().append('<div id="' + _options.toolbarId + '" class="DadbSource"></div>');
 			}
 
-			if (_options.blocksToolbar.lenght > 0) {
+			if (_options.blocksToolbar.length > 0) {
 				_addBlocksToTolbar('#' + _options.toolbarId, _options.blocksToolbar);
-				_createDroppable();
-				_createDraggable();
-				_createStampable();
 			}
+			_createDroppable();
+			_createDraggable();
+			_createStampable();
 		}
 
 		function _onOver(event, div) {
@@ -200,22 +203,24 @@
 				return;
 			}
 
+			console.log(div);
+
 			// take the properties of the overed element
 			var blockDataValue;
-			var blockParentId;
+			var blockToolbarId;
 			var targetDiv;
 
 			try {
 				//stamp
 				blockDataValue = div.attr('data-value');
-				blockParentId = div.attr('data-parentId');
+				blockToolbarId = div.attr('data-toolbarId');
 				targetDiv = $(event.currentTarget);
 				//$(event.toElement).closest('div.DadbStep');
 			} catch (e) {
 				try {
 					// drag and drop
 					blockDataValue = div.draggable.attr('data-value');
-					blockParentId = div.draggable.attr('data-parentId');
+					//blockParentId = div.draggable.attr('data-parentId');
 					targetDiv = $(this);
 				} catch (e) {
 					return;
@@ -230,7 +235,7 @@
 
 			var className;
 			//allow the drop only for the blocks from the same instance
-			if (blockParentId === parentId) {
+			if (blockToolbarId === _options.toolbarId) {
 				//
 				var nSteps = (blockDataValue / _options.step);
 				var oldHoveredDivs = _options.hoveredDivs;
@@ -330,8 +335,8 @@
 			}
 
 			// If an element is being dragged, update the helper's position.
-			if (_options.dragDiv) {
-				_options.dragDiv.css({
+			if (gDadb.dragDiv) {
+				gDadb.dragDiv.css({
 					top: _options.lastY,
 					left: _options.lastX
 				});
@@ -341,9 +346,9 @@
 
 		function _stopStampDrag() {
 			// Remove the helper from the DOM and clear the variable.
-			if (_options.dragDiv) {
-				_options.dragDiv.remove();
-				_options.dragDiv = null;
+			if (gDadb.dragDiv) {
+				gDadb.dragDiv.remove();
+				gDadb.dragDiv = null;
 			}
 			//remove class stamp from this range toolbar
 			$('div.DadbDraggableBlock[data-parentid="' + parentId + '"]').removeClass('Stamp');
@@ -366,13 +371,13 @@
 
 			// hover efect
 			$('#steps_' + parentId + '.DadbSteps .DadbStep').mouseover(function (event) {
-				_onOver(event, _options.dragDiv);
+				_onOver(event, gDadb.dragDiv);
 			});
 
 			// when click on block's toolbar
 			// TODO parent - check if it is like this on prod!
 			$('#' + _options.toolbarId).parent().unbind('click').click(function () {
-				if (_options.dragDiv) {
+				if (gDadb.dragDiv) {
 					_removeHighlight();
 					_stopStampDrag();
 				}
@@ -393,14 +398,15 @@
 					_stopStampDrag();
 				} else {
 					//switch stamps
-					if (_options.dragDiv) {
+					if (gDadb.dragDiv) {
 						_stopStampDrag();
 					}
 					// take new stamplowe the select block as a stamp only if it not selected
 					$(this).addClass('Stamp');
 					// Start dragging this block
 					$(document).mousemove(_startStampDrag);
-					_options.dragDiv = $(this).clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
+					//TODO ...25 toolbar id
+					gDadb.dragDiv = $(this).clone().attr('data-toolbarId',123).addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
 					// Fire the dragging event to update the helper's position
 					_startStampDrag();
 
@@ -412,22 +418,22 @@
 
 		function _addClickOnToPutBlock(e) {
 			// Only do something is an element is being dragged
-			if (_options.dragDiv) {
+			if (gDadb.dragDiv) {
 				var x = e.pageX - _options.hoveredDivs.lastX;
 				var y = e.pageY - _options.hoveredDivs.lastY;
 				var z = Math.sqrt(x * x + y * y);
 				if (z < 15) {
 					// the block should be dropped to the range...
 					_removeHighlight();
-					var nSteps = (_options.dragDiv.attr('data-value') / _options.step);
+					var nSteps = (gDadb.dragDiv.attr('data-value') / _options.step);
 					if (_options.hoveredDivs.DadbEmpty.length !== nSteps) {
-						_options.dragDiv.effect('shake', {
+						gDadb.dragDiv.effect('shake', {
 							distance: 6,
 							times: 3
 						}, 200);
 						return;
 					}
-					_addSteps(_options.hoveredDivs.DadbEmpty, _options.dragDiv.attr('data-value'), _options.dragDiv.attr('data-color'), _options.dragDiv.attr('data-block-id'), _options.dragDiv.attr('data-att-id'), _options.dragDiv.attr('data-att-class'));
+					_addSteps(_options.hoveredDivs.DadbEmpty, gDadb.dragDiv.attr('data-value'), gDadb.dragDiv.attr('data-color'), gDadb.dragDiv.attr('data-block-id'), gDadb.dragDiv.attr('data-att-id'), gDadb.dragDiv.attr('data-att-class'));
 				}
 				_removeHighlight();
 			}
@@ -636,7 +642,7 @@
 		 * Return the info about dragging mode
 		 */
 		this.isStamp = function () {
-			return _options.dragDiv;
+			return gDadb.dragDiv;
 		};
 
 		_init();

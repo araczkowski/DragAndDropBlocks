@@ -86,7 +86,7 @@
     <div id="root_parent" class="DadbContent">
 
         <div id="models" style="overflow: auto; width: 1200px; margin-right: 20px; padding-top: 20px;">
-           <p>Day 1</p>
+            <p>Day 1</p>
             <div class="typeKid" id="dadb1" style="margin-left: 10px;"></div>
             <div class="typeStaff" id="dadb3" style="margin-left: 10px;"></div>
 
@@ -125,55 +125,62 @@
         var blocksToolbar = [{
             'code': 'K30',
             'value': 30,
-            'blockId': 1,
-            'class': 'Staff',
+            'blockId': 2,
             'attributes': [{
-                'COL_Toolbar': '#00abe8'
+                'COL_Toolbar': '#ff7c34'
             }]
         }, {
             'code': 'K60',
             'value': 60,
-            'blockId': 1,
-            'class': 'Staff',
+            'blockId': 3,
             'attributes': [{
-                'COL_Toolbar': '#00abe8'
+                'COL_Toolbar': '#ff7c34'
             }]
         }, {
             'code': 'K120',
             'value': 120,
+            'blockId': 4,
+            'attributes': [{
+                'COL_Toolbar': '#ff7c34'
+            }]
+        }];
+
+        var blocksToolbar2 = [{
+            'code': 'S30',
+            'value': 30,
             'blockId': 1,
-            'class': 'Staff',
+            'attributes': [{
+                'COL_Toolbar': '#00abe8'
+            }]
+        }, {
+            'code': 'S60',
+            'value': 60,
+            'blockId': 1,
+            'attributes': [{
+                'COL_Toolbar': '#00abe8'
+            }]
+        }, {
+            'code': 'S120',
+            'value': 120,
+            'blockId': 1,
             'attributes': [{
                 'COL_Toolbar': '#00abe8'
             }]
         }];
+
         $(function() {
             // inicialization - test from APEX (string insted of objects)
-            dadb1 = new Dadb('dadb1', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1","openBlocks":[[0,1440]],"attToolbarId":"tolbar3"}');
+            dadb1 = new Dadb('dadb1', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1","openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar) + '}');
             dadb1.addBlocks('[{"blockId":"123", "start":420, "value":60, "rangeId":"100", "backgroundColor":"#ff7c34"}]');
 
 
-            dadb3 = new Dadb('dadb3', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar) + '}');
+            dadb3 = new Dadb('dadb3', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar2) + '}');
             //dadb3.addBlocks('[{"blockId":"333", "start":720, "value":15,"rangeId":"210", "backgroundColor":"#ff7c34"}]');
 
             dadb5 = new Dadb('dadb5', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
             dadb7 = new Dadb('dadb7', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
 
         });
-        var id = 5;
-
-        // function addNew() {
-        //   var curId = 'dadb' + id++;
-        //   var models = $('#models');
-        //   var model = $('<div/>', {
-        //     'id': curId,
-        //     'style': 'margin-left: 10px',
-        //   }).appendTo(models);
-        //
-        //   var theInstructions = curId +'= new Dadb("'+curId+'",\'{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[420,715,1]],"attToolbarId":"tolbar3"}\');';
-        //   var f = new Function(theInstructions);
-        //   return (f());
-        // }
     </script>
 
 </body>

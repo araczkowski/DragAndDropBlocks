@@ -203,7 +203,6 @@ var gDadb = {
 				return;
 			}
 
-			console.log(div);
 
 			// take the properties of the overed element
 			var blockDataValue;
@@ -220,7 +219,7 @@ var gDadb = {
 				try {
 					// drag and drop
 					blockDataValue = div.draggable.attr('data-value');
-					//blockParentId = div.draggable.attr('data-parentId');
+					blockToolbarId = div.helper.attr('data-toolbarId');
 					targetDiv = $(this);
 				} catch (e) {
 					return;
@@ -233,6 +232,7 @@ var gDadb = {
 				return;
 			}
 
+						
 			var className;
 			//allow the drop only for the blocks from the same instance
 			if (blockToolbarId === _options.toolbarId) {
@@ -314,6 +314,7 @@ var gDadb = {
 				},
 				start: function (ev, div) {
 					div.helper.width($(this).width());
+					div.helper.attr('data-toolbarId',_options.toolbarId);
 				},
 				stop: function (ev, div) {
 					div.helper.width($(this).width());
@@ -405,8 +406,7 @@ var gDadb = {
 					$(this).addClass('Stamp');
 					// Start dragging this block
 					$(document).mousemove(_startStampDrag);
-					//TODO ...25 toolbar id
-					gDadb.dragDiv = $(this).clone().attr('data-toolbarId',123).addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
+					gDadb.dragDiv = $(this).clone().attr('data-toolbarId',_options.toolbarId).addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
 					// Fire the dragging event to update the helper's position
 					_startStampDrag();
 

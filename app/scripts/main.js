@@ -1,7 +1,10 @@
 'use strict';
 
 var gDadb = {
-	dragDiv: ''
+	dragDiv: '',
+	lastX: 0,
+	lastY: 0,
+	hoveredDivs: {}
 };
 
 
@@ -38,10 +41,7 @@ var gDadb = {
 			toolbarId: 'blocksToolbar',
 			attToolbarId: [],
 			blocksToolbar: [],
-			openBlocks: [],
-			lastX: 0,
-			lastY: 0,
-			hoveredDivs: {}
+			openBlocks: []
 		};
 
 		var _onAddBlock = null,
@@ -154,12 +154,13 @@ var gDadb = {
 			for (var i = 0; i < blocksArray.length; i++) {
 				var block = $('<div/>', {
 					'id': 'block' + blocksArray[i].value,
-					'class': 'DadbDraggableBlock DadbTemplate ' + blocksArray[i].class, //class,
+					'class': 'DadbDraggableBlock DadbTemplate ' + blocksArray[i].class,
 					'data-block-id': blocksArray[i].blockId,
 					'data-code': blocksArray[i].code,
 					'data-name': blocksArray[i].name,
 					'data-value': blocksArray[i].value,
 					'data-parentId': parentId,
+					'data-toolbarId': _options.toolbarId,
 					'html': '<span> <i class = "DadbHandle fa fa-arrows"></i></span>',
 				}).appendTo(eBlocks);
 
@@ -232,13 +233,12 @@ var gDadb = {
 				return;
 			}
 
-						
 			var className;
 			//allow the drop only for the blocks from the same instance
 			if (blockToolbarId === _options.toolbarId) {
 				//
 				var nSteps = (blockDataValue / _options.step);
-				var oldHoveredDivs = _options.hoveredDivs;
+				var oldHoveredDivs = gDadb.hoveredDivs;
 				var hoveredDivs = _getHoveredDivs(targetDiv, div, nSteps, event);
 				if (hoveredDivs !== oldHoveredDivs) {
 					if (nSteps !== hoveredDivs.DadbEmpty.length) {
@@ -314,7 +314,6 @@ var gDadb = {
 				},
 				start: function (ev, div) {
 					div.helper.width($(this).width());
-					div.helper.attr('data-toolbarId',_options.toolbarId);
 				},
 				stop: function (ev, div) {
 					div.helper.width($(this).width());
@@ -331,15 +330,15 @@ var gDadb = {
 			// Only update last known mouse position if an event object
 			// was passed through (mousemove event).
 			if (e) {
-				_options.lastX = e.pageX;
-				_options.lastY = e.pageY;
+				gDadb.lastX = e.pageX;
+				gDadb.lastY = e.pageY;
 			}
 
 			// If an element is being dragged, update the helper's position.
 			if (gDadb.dragDiv) {
 				gDadb.dragDiv.css({
-					top: _options.lastY,
-					left: _options.lastX
+					top: gDadb.lastY,
+					left: gDadb.lastX
 				});
 			}
 		}
@@ -352,9 +351,9 @@ var gDadb = {
 				gDadb.dragDiv = null;
 			}
 			//remove class stamp from this range toolbar
-			$('div.DadbDraggableBlock[data-parentid="' + parentId + '"]').removeClass('Stamp');
+			$('div.DadbDraggableBlock').removeClass('Stamp');
 			//unbing the click from the block's range
-			$('#steps_' + parentId + '.DadbSteps .DadbStep').unbind('click');
+			$('.DadbSteps .DadbStep').unbind('click');
 		}
 
 		//
@@ -385,13 +384,13 @@ var gDadb = {
 			});
 
 			// when click on block in blocks toolbar - take the block as a stamp
-			$('div.DadbDraggableBlock[data-parentid="' + parentId + '"]').unbind('click').click(function (e) {
+			$('div.DadbDraggableBlock').unbind('click').click(function (e) {
 				e.stopPropagation(); //important! see below
 				_removeHighlight();
 				// set the current mouse possition
 				if (e) {
-					_options.lastX = e.pageX;
-					_options.lastY = e.pageY;
+					gDadb.lastX = e.pageX;
+					gDadb.lastY = e.pageY;
 				}
 
 				if ($(this).hasClass('Stamp')) {
@@ -406,7 +405,7 @@ var gDadb = {
 					$(this).addClass('Stamp');
 					// Start dragging this block
 					$(document).mousemove(_startStampDrag);
-					gDadb.dragDiv = $(this).clone().attr('data-toolbarId',_options.toolbarId).addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
+					gDadb.dragDiv = $(this).clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
 					// Fire the dragging event to update the helper's position
 					_startStampDrag();
 
@@ -419,21 +418,21 @@ var gDadb = {
 		function _addClickOnToPutBlock(e) {
 			// Only do something is an element is being dragged
 			if (gDadb.dragDiv) {
-				var x = e.pageX - _options.hoveredDivs.lastX;
-				var y = e.pageY - _options.hoveredDivs.lastY;
+				var x = e.pageX - gDadb.hoveredDivs.lastX;
+				var y = e.pageY - gDadb.hoveredDivs.lastY;
 				var z = Math.sqrt(x * x + y * y);
 				if (z < 15) {
 					// the block should be dropped to the range...
 					_removeHighlight();
 					var nSteps = (gDadb.dragDiv.attr('data-value') / _options.step);
-					if (_options.hoveredDivs.DadbEmpty.length !== nSteps) {
+					if (gDadb.hoveredDivs.DadbEmpty.length !== nSteps) {
 						gDadb.dragDiv.effect('shake', {
 							distance: 6,
 							times: 3
 						}, 200);
 						return;
 					}
-					_addSteps(_options.hoveredDivs.DadbEmpty, gDadb.dragDiv.attr('data-value'), gDadb.dragDiv.attr('data-color'), gDadb.dragDiv.attr('data-block-id'), gDadb.dragDiv.attr('data-att-id'), gDadb.dragDiv.attr('data-att-class'));
+					_addSteps(gDadb.hoveredDivs.DadbEmpty, gDadb.dragDiv.attr('data-value'), gDadb.dragDiv.attr('data-color'), gDadb.dragDiv.attr('data-block-id'), gDadb.dragDiv.attr('data-att-id'), gDadb.dragDiv.attr('data-att-class'));
 				}
 				_removeHighlight();
 			}
@@ -444,9 +443,9 @@ var gDadb = {
 		function _getHoveredDivs(firstElement, blockDiv, nSteps, e) {
 
 			var id = firstElement.attr('id');
-			_options.hoveredDivs = {};
-			_options.hoveredDivs.DadbStep = [];
-			_options.hoveredDivs.DadbEmpty = [];
+			gDadb.hoveredDivs = {};
+			gDadb.hoveredDivs.DadbStep = [];
+			gDadb.hoveredDivs.DadbEmpty = [];
 			var step;
 			var div;
 
@@ -454,17 +453,17 @@ var gDadb = {
 				step = Number(id.replace('step_' + parentId + '_', '')) + Number(i);
 				div = $('#step_' + parentId + '_' + step);
 				if (div.hasClass('DadbStep')) {
-					_options.hoveredDivs.DadbStep.push(div);
+					gDadb.hoveredDivs.DadbStep.push(div);
 				}
 				if (div.hasClass('DadbEmpty')) {
-					_options.hoveredDivs.DadbEmpty.push(div);
+					gDadb.hoveredDivs.DadbEmpty.push(div);
 				}
 			}
 			if (e) {
-				_options.hoveredDivs.lastX = e.pageX;
-				_options.hoveredDivs.lastY = e.pageY;
+				gDadb.hoveredDivs.lastX = e.pageX;
+				gDadb.hoveredDivs.lastY = e.pageY;
 			}
-			return _options.hoveredDivs;
+			return gDadb.hoveredDivs;
 		}
 
 		function _removeHighlight() {

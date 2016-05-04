@@ -69,11 +69,12 @@
             color: #fff;
             top: 14px;
         }
-	div.dadbDay {
-	   margin-left: 10px;
-           margin-bottom: 20px;
-	   padding-bottom: 26px;
-	}		
+
+        div.dadbDay {
+            margin-left: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 26px;
+        }
     </style>
 </head>
 
@@ -129,68 +130,59 @@
         var dadb5;
         var blocksToolbar = [{
             'code': 'K30',
-            'value': 30,
-            'blockId': 2,
-            'class': 'Kids',
-            'attributes': [{
-                'COL_Toolbar': '#ff7c34'
-            }]
+            'value': 30
         }, {
             'code': 'K60',
-            'value': 60,
-            'blockId': 3,
-            'class': 'Kids',
-            'attributes': [{
-                'COL_Toolbar': '#ff7c34'
-            }]
+            'value': 60
         }, {
             'code': 'K120',
-            'value': 120,
-            'blockId': 4,
-            'class': 'Kids',
-            'attributes': [{
-                'COL_Toolbar': '#ff7c34'
-            }]
+            'value': 120
         }];
 
         var blocksToolbar2 = [{
             'code': 'S30',
-            'value': 30,
-            'blockId': 1,
-            'class': 'Staff',
-            'attributes': [{
-                'COL_Toolbar': '#00abe8'
-            }]
+            'value': 30
         }, {
             'code': 'S60',
-            'value': 60,
-            'blockId': 1,
-            'class': 'Staff',
-            'attributes': [{
-                'COL_Toolbar': '#00abe8'
-            }]
+            'value': 60
         }, {
             'code': 'S120',
-            'value': 120,
-            'blockId': 1,
-            'class': 'Staff',
-            'attributes': [{
-                'COL_Toolbar': '#00abe8'
-            }]
+            'value': 120
         }];
 
+        function f1() {
+            console.log(1)
+        };
+
+        function f3() {
+            console.log(3)
+        };
+
+        function f5() {
+            console.log(5)
+        };
+
+        function f7() {
+            console.log(7)
+        };
+
         $(function() {
+
             // inicialization - test from APEX (string insted of objects)
-            dadb1 = new Dadb('dadb1', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1","openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar) + '}');
+            dadb1 = new Dadb('dadb1', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1","openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar) + '}');
+            dadb1.setOnChangeCallback(f1);
             dadb1.addBlocks('[{"blockId":"123", "start":420, "value":60, "rangeId":"100", "backgroundColor":"#ff7c34"}]');
 
 
-            dadb3 = new Dadb('dadb3', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar2) + '}');
+            dadb3 = new Dadb('dadb3', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar2) + '}');
             //dadb3.addBlocks('[{"blockId":"333", "start":720, "value":15,"rangeId":"210", "backgroundColor":"#ff7c34"}]');
+            dadb3.setOnChangeCallback(f3);
 
             dadb5 = new Dadb('dadb5', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
-            dadb7 = new Dadb('dadb7', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb5.setOnChangeCallback(f5);
 
+            dadb7 = new Dadb('dadb7', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb7.setOnChangeCallback(f7);
         });
     </script>
 

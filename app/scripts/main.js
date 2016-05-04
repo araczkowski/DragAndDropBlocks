@@ -599,7 +599,7 @@ var gDadb = {
         };
 
         this.removeBlocks = function() {
-            _removeBlock(null, null, true);
+            _removeBlock(null, _onDeleteBlock, true);
             return this;
         };
 

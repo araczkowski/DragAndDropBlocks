@@ -320,13 +320,9 @@ var gDadb = {
             $('div.DadbDraggableBlock').draggable({
                 appendTo: 'body',
                 helper: 'clone',
-                revert: 'invalid',
-                //snap: '.DadbSteps .DadbStep',
+                revert: _removeHighlight,
                 handle: 'span i.DadbHandle',
                 greedy: true,
-                reverting: function() {
-                    _removeHighlight();
-                },
                 start: function(ev, div) {
                     div.helper.width($(this).width());
                 },
@@ -374,7 +370,7 @@ var gDadb = {
         //
         function _createStampable() {
             // stop when cancel is clicked
-            $(document).keyup(function(e) {
+            $(document).unbind('keyup').keyup(function(e) {
                 // esc
                 if (e.keyCode === 27) {
                     _removeHighlight();
@@ -418,7 +414,7 @@ var gDadb = {
                     // take new stamplowe the select block as a stamp only if it not selected
                     $(this).addClass('Stamp');
                     // Start dragging this block
-                    $(document).mousemove(_startStampDrag);
+                    $(document).unbind('mousemove').mousemove(_startStampDrag);
                     gDadb.dragDiv = $(this).clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
                     // Fire the dragging event to update the helper's position
                     _startStampDrag();
@@ -671,63 +667,63 @@ var gDadb = {
 
 
 // special functionality for IE8
-$(function() {
-    // to have indexOf working on an array in IE8
-    if (!Array.prototype.indexOf) {
-        Array.prototype.indexOf = function(obj, start) {
-            for (var i = (start || 0), j = this.length; i < j; i++) {
-                if (this[i] === obj) {
-                    return i;
-                }
-            }
-            return -1;
-        };
-    }
-
-    // to have jQuery forEach in IE8
-    if (typeof Array.prototype.forEach !== 'function') {
-        Array.prototype.forEach = function(callback) {
-            for (var i = 0; i < this.length; i++) {
-                callback.apply(this, [this[i], i, this]);
-            }
-        };
-    }
-    // to have info/status on revert
-    // http://stackoverflow.com/questions/1853230/jquery-ui-draggable-event-status-on-revert
-    $.ui.draggable.prototype._mouseStop = function(event) {
-        //If we are using droppables, inform the manager about the drop
-        var dropped = false;
-        if ($.ui.ddmanager && !this.options.dropBehaviour) {
-            dropped = $.ui.ddmanager.drop(this, event);
-        }
-
-        //if a drop comes from outside (a sortable)
-        if (this.dropped) {
-            dropped = this.dropped;
-            this.dropped = false;
-        }
-
-        if ((this.options.revert === 'invalid' && !dropped) ||
-            (this.options.revert === 'valid' && dropped) || this.options.revert === true ||
-            ($.isFunction(this.options.revert) && this.options.revert.call(this.element, dropped))) {
-            var self = this;
-            self._trigger('reverting', event);
-            $(this.helper).animate(this.originalPosition, parseInt(this.options.revertDuration, 10), function() {
-                event.reverted = true;
-                self._trigger('stop', event);
-                self._clear();
-            });
-        } else {
-            this._trigger('stop', event);
-            this._clear();
-        }
-        return false;
-    };
-    //version
-    // $(document.body).append('<div id="version">v Alfa4</div>');
-    // $('#version').css({
-    // 	'bottom': '0',
-    // 	'right': '0',
-    // 	'position': 'fixed'
-    // });
-});
+// $(function() {
+//     // to have indexOf working on an array in IE8
+//     if (!Array.prototype.indexOf) {
+//         Array.prototype.indexOf = function(obj, start) {
+//             for (var i = (start || 0), j = this.length; i < j; i++) {
+//                 if (this[i] === obj) {
+//                     return i;
+//                 }
+//             }
+//             return -1;
+//         };
+//     }
+//
+//     // to have jQuery forEach in IE8
+//     if (typeof Array.prototype.forEach !== 'function') {
+//         Array.prototype.forEach = function(callback) {
+//             for (var i = 0; i < this.length; i++) {
+//                 callback.apply(this, [this[i], i, this]);
+//             }
+//         };
+//     }
+//     // to have info/status on revert
+//     // http://stackoverflow.com/questions/1853230/jquery-ui-draggable-event-status-on-revert
+//     $.ui.draggable.prototype._mouseStop = function(event) {
+//         //If we are using droppables, inform the manager about the drop
+//         var dropped = false;
+//         if ($.ui.ddmanager && !this.options.dropBehaviour) {
+//             dropped = $.ui.ddmanager.drop(this, event);
+//         }
+//
+//         //if a drop comes from outside (a sortable)
+//         if (this.dropped) {
+//             dropped = this.dropped;
+//             this.dropped = false;
+//         }
+//
+//         if ((this.options.revert === 'invalid' && !dropped) ||
+//             (this.options.revert === 'valid' && dropped) || this.options.revert === true ||
+//             ($.isFunction(this.options.revert) && this.options.revert.call(this.element, dropped))) {
+//             var self = this;
+//             self._trigger('reverting', event);
+//             $(this.helper).animate(this.originalPosition, parseInt(this.options.revertDuration, 10), function() {
+//                 event.reverted = true;
+//                 self._trigger('stop', event);
+//                 self._clear();
+//             });
+//         } else {
+//             this._trigger('stop', event);
+//             this._clear();
+//         }
+//         return false;
+//     };
+//     //version
+//     // $(document.body).append('<div id="version">v Alfa4</div>');
+//     // $('#version').css({
+//     // 	'bottom': '0',
+//     // 	'right': '0',
+//     // 	'position': 'fixed'
+//     // });
+// });

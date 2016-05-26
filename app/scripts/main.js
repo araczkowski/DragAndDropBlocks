@@ -1,6 +1,7 @@
 'use strict';
 
 var gDadb = {
+    mode: '',
     dragDiv: '',
     lastX: 0,
     lastY: 0,
@@ -161,27 +162,12 @@ var gDadb = {
                 var block = $('<div/>', {
                     'id': 'block' + blocksArray[i].value,
                     'class': 'DadbDraggableBlock DadbTemplate',
-                    //'data-block-id': blocksArray[i].blockId,
-                    //'data-code': blocksArray[i].code,
-                    //'data-name': blocksArray[i].name,
                     'data-value': blocksArray[i].value,
                     'data-parentId': parentId,
                     'data-toolbarId': _options.toolbarId,
                     'html': html,
                 }).appendTo(eBlocks);
 
-                //attributes
-                // for (var n = 0; n < blocksArray[i].attributes.length; n++) {
-                //     var obj = blocksArray[i].attributes[n];
-                //     var k = '';
-                //     var v = '';
-                //     for (var key in obj) {
-                //         k = key;
-                //         v = obj[key];
-                //     }
-                //     block.attr('data-' + k, v);
-                // }
-                //var backgr = block.data('col_toolbar');
                 var backgroundColor;
                 if (_options.class === 'KID') {
                     backgroundColor = '#ff7c34';
@@ -207,8 +193,6 @@ var gDadb = {
             }
 
             if (!_options.readOnly) {
-                _createDroppable();
-                _createDraggable();
                 _createStampable();
             }
         }
@@ -230,16 +214,8 @@ var gDadb = {
                 blockDataValue = div.attr('data-value');
                 blockToolbarId = div.attr('data-toolbarId');
                 targetDiv = $(event.currentTarget);
-                //$(event.toElement).closest('div.DadbStep');
             } catch (e) {
-                try {
-                    // drag and drop
-                    blockDataValue = div.draggable.attr('data-value');
-                    blockToolbarId = div.helper.attr('data-toolbarId');
-                    targetDiv = $(this);
-                } catch (e) {
-                    return;
-                }
+                return;
             }
 
             // only blocks
@@ -287,53 +263,6 @@ var gDadb = {
             }
         }
 
-        function _createDroppable(el) {
-            // Droppabe
-            $(el || '#steps_' + parentId + '.DadbSteps .DadbStep').droppable({
-                tolerance: 'pointer',
-                revert: true,
-                over: _onOver,
-                drop: function(ev, div) {
-                    _removeHighlight();
-
-                    //allow the drop only for the blocks from the same instance
-                    var blockToolbarId = div.draggable.attr('data-toolbarId');
-                    if (blockToolbarId === _options.toolbarId) {
-                        var nSteps = (div.draggable.attr('data-value') / _options.step);
-                        var hoveredSteps = _getHoveredDivs($(this), div, nSteps);
-                        if (hoveredSteps.DadbEmpty.length !== nSteps) {
-                            div.draggable.effect('shake', {
-                                distance: 10,
-                                times: 3
-                            }, 300);
-                            return;
-                        }
-                        _addSteps(hoveredSteps.DadbEmpty, div.draggable.attr('data-value'), div.draggable.attr('data-color'), _onAddBlock);
-
-                    }
-                }
-            });
-        }
-
-        function _createDraggable() {
-            // Draggable
-            $('div.DadbDraggableBlock').draggable({
-                appendTo: 'body',
-                helper: 'clone',
-                revert: _removeHighlight,
-                handle: 'span i.DadbHandle',
-                greedy: true,
-                start: function(ev, div) {
-                    div.helper.width($(this).width());
-                },
-                stop: function(ev, div) {
-                    div.helper.width($(this).width());
-                }
-            });
-
-            //
-            $('div.draggable, .DadbSteps .DadbStep').disableSelection();
-        }
 
         //STAMP START
         // Fires on mousemove and updates element position
@@ -364,7 +293,9 @@ var gDadb = {
             //remove class stamp from this range toolbar
             $('div.DadbDraggableBlock').removeClass('Stamp');
             //unbing the click from the block's range
-            $('.DadbSteps .DadbStep').unbind('click');
+            $('.DadbSteps .DadbStep').unbind('click mouseup');
+            //
+            $('body').removeClass('unselectable');
         }
 
         //
@@ -393,17 +324,25 @@ var gDadb = {
                 }
             });
 
-            // when click on block in blocks toolbar - take the block as a stamp
-            $('div.DadbDraggableBlock').unbind('click').click(function(e) {
-                e.stopPropagation(); //important! see below
+            function _takeBlockFromToolbar(event, mode, element) {
+                event.stopPropagation(); //important! see below
+                $('body').addClass('unselectable');
+                gDadb.mode = mode;
+                var div;
+                if (mode === 'drag') {
+                    div = $(element).closest('div.DadbDraggableBlock');
+                } else {
+                    div = $(element);
+                }
+                //
                 _removeHighlight();
                 // set the current mouse possition
-                if (e) {
-                    gDadb.lastX = e.pageX;
-                    gDadb.lastY = e.pageY;
+                if (event) {
+                    gDadb.lastX = event.pageX;
+                    gDadb.lastY = event.pageY;
                 }
 
-                if ($(this).hasClass('Stamp')) {
+                if (div.hasClass('Stamp')) {
                     // sipmply put the stamp back
                     _stopStampDrag();
                 } else {
@@ -412,16 +351,32 @@ var gDadb = {
                         _stopStampDrag();
                     }
                     // take new stamplowe the select block as a stamp only if it not selected
-                    $(this).addClass('Stamp');
-                    // Start dragging this block
+                    if (mode === 'stamp') {
+                        div.addClass('Stamp');
+                    }
+                    // Start dragging the block
                     $(document).unbind('mousemove').mousemove(_startStampDrag);
-                    gDadb.dragDiv = $(this).clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
+                    gDadb.dragDiv = div.clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
                     // Fire the dragging event to update the helper's position
                     _startStampDrag();
 
                     // add click on time range
-                    $(document).unbind('click', _addClickOnToPutBlock).click(_addClickOnToPutBlock);
+                    if (mode === 'drag') {
+                        $(document).unbind('click mouseup', _addClickOnToPutBlock).mouseup(_addClickOnToPutBlock);
+                    } else {
+                        $(document).unbind('click mouseup', _addClickOnToPutBlock).click(_addClickOnToPutBlock);
+                    }
                 }
+            }
+
+            // when drag via mouse up and mouse down
+            $('div.DadbDraggableBlock span i.DadbHandle').unbind('mousedown').bind('mousedown', function(e) {
+                _takeBlockFromToolbar(e, 'drag', this);
+            });
+
+            // when click on block in blocks toolbar - take the block as a stamp
+            $('div.DadbDraggableBlock').unbind('click').click(function(e) {
+                _takeBlockFromToolbar(e, 'stamp', this);
             });
         }
 
@@ -437,15 +392,15 @@ var gDadb = {
                     _removeHighlight();
                     var nSteps = (gDadb.dragDiv.attr('data-value') / _options.step);
                     if (gDadb.hoveredDivs.DadbEmpty.length !== nSteps) {
-                        gDadb.dragDiv.effect('shake', {
-                            distance: 6,
-                            times: 3
-                        }, 200);
                         return;
                     }
                     _addSteps(gDadb.hoveredDivs.DadbEmpty, gDadb.dragDiv.attr('data-value'), gDadb.dragDiv.attr('data-color'), gDadb.hoveredDivs.calback);
                 }
                 _removeHighlight();
+                //remove stamp in drag mode
+                if (gDadb.mode === 'drag') {
+                    _stopStampDrag();
+                }
             }
         }
         //STAMP END
@@ -540,7 +495,6 @@ var gDadb = {
             blocks.removeAttr('data-color');
             $('#' + id + ' div.DadbStepContent').empty();
             $('#' + id + ' div.DadbStepContent').unbind('click');
-            _createDroppable($(selector));
             _removeHighlight();
 
             if (typeof(calback) === 'function') {
@@ -649,7 +603,6 @@ var gDadb = {
             _options.step = step;
             _build();
             _openBlocks();
-            _createDroppable();
             return this;
         };
 

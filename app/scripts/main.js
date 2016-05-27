@@ -389,12 +389,10 @@ var gDadb = {
                 var z = Math.sqrt(x * x + y * y);
                 if (z < 15) {
                     // the block should be dropped to the range...
-                    _removeHighlight();
                     var nSteps = (gDadb.dragDiv.attr('data-value') / _options.step);
-                    if (gDadb.hoveredDivs.DadbEmpty.length !== nSteps) {
-                        return;
+                    if (gDadb.hoveredDivs.DadbEmpty.length === nSteps) {
+                        _addSteps(gDadb.hoveredDivs.DadbEmpty, gDadb.dragDiv.attr('data-value'), gDadb.dragDiv.attr('data-color'), gDadb.hoveredDivs.calback);
                     }
-                    _addSteps(gDadb.hoveredDivs.DadbEmpty, gDadb.dragDiv.attr('data-value'), gDadb.dragDiv.attr('data-color'), gDadb.hoveredDivs.calback);
                 }
                 _removeHighlight();
                 //remove stamp in drag mode

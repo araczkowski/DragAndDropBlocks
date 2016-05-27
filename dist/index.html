@@ -1,0 +1,141 @@
+<!DOCTYPE html><html class=no-js><head><meta charset=utf-8><title>DragAndDropBlocks</title><meta name=description content=""><meta name=viewport content="width=device-width"><link rel="shortcut icon" href=/088e5133.favicon.ico><!-- like in apex--><link href=//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css rel=stylesheet><link rel=stylesheet href=styles/25d883da.vendor.css><link rel=stylesheet href=styles/ec4161d5.main.css><style>div.typeKid div.DadbStepContent {
+            background: #ffd6b8;
+            opacity: 0.6;
+        }
+
+        div.typeKid .DadbStepHalfHour {
+            border-left: 1px solid #ffd6b8;
+        }
+
+        div.typeKid .DadbStepQuarter {
+            border-left: 1px solid #ffd6b8;
+        }
+
+        div.typeKid .DadbPlannedBlockBody {
+            border-left: 1px solid #ff8229;
+        }
+
+        div.typeStaff div.DadbStepContent {
+            background: #e6f7fd;
+            opacity: 0.6;
+        }
+
+        div.typeStaff .DadbStepHalfHour {
+            border-left: 1px solid #e6f7fd;
+        }
+
+        div.typeStaff .DadbStepQuarter {
+            border-left: 1px solid #e6f7fd;
+        }
+
+        div.typeStaff .DadbPlannedBlockBody {
+            border-left: 1px solid #00abe8;
+        }
+
+        .DadbDraggableBlock.Stamp.Staff:after {
+            content: "\f182";
+            font-family: FontAwesome;
+            right: 3px;
+            position: absolute;
+            top: 0;
+            color: #fff;
+        }
+
+        .DadbDraggableBlock.Stamp.Kids:after {
+            content: "\f1ae";
+            font-family: FontAwesome;
+            right: 3px;
+            position: absolute;
+            color: #fff;
+            top: 14px;
+        }
+
+        div.dadbDay {
+            margin-left: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 26px;
+        }</style><body><!-- <a href="javascript:addNew();">test</a> --><div id=info style="font-size: small"><p>you can work in 2 modes now:<br><li><strong>drag&drop mode</strong> - move the draggable block by clicking with the mouse on the arrows <i class="fa fa-arrows" aria-hidden=true></i> and dragging it to the empty space on the time range..</li><li><strong>click mode</strong> - select the block by clicking with the mouse on it and navigate to the empty space on the time range, now you can put the selected block on the range. You can do this put many times - you can use it as a stamp. Use the escape kay to remove the selected block or click again on the selected block, or click on the block's toolbar to drop it, or click on anather block to change the selection etc..</li></p></div><div id=root_parent class=DadbContent><div id=models style="overflow: auto; width: 1200px; margin-right: 20px; padding-top: 20px"><p>Day 1</p><div class="typeKid dadbDay" id=dadb1></div><div class="typeStaff dadbDay" id=dadb3></div><p>Day 2</p><div class="typeKid dadbDay" id=dadb5></div><div class="typeStaff dadbDay" id=dadb7></div><p>Day 3</p><div class="typeKid dadbDay" id=dadb8></div><div class="typeStaff dadbDay" id=dadb9></div><p>Day 4</p><div class="typeKid dadbDay" id=dadb10></div><div class="typeStaff dadbDay" id=dadb11></div><p>Day 5</p><div class="typeKid dadbDay" id=dadb12></div><div class="typeStaff dadbDay" id=dadb13></div><p>Day 6</p><div class="typeKid dadbDay" id=dadb14></div><div class="typeStaff dadbDay" id=dadb15></div><p>Day 7</p><div class="typeKid dadbDay" id=dadb16></div><div class="typeStaff dadbDay" id=dadb17></div></div><br><br><table><tbody><tr><td><fieldset style="width: 45%; float: left; height: 80px"><legend>Kids:</legend><div id=tolbar1></div></fieldset><fieldset style="width: 45%; float: left; height: 80px"><legend>Staff:</legend><div id=tolbar2></div></fieldset><tr></table></div><script src=scripts/67dd0b65.vendor.js></script><script src=scripts/29a3dee8.main.js></script><script>var dadb1;
+        var dadb3;
+        var dadb5;
+        var dadb6,dadb7,dadb8,dadb9,dadb10,dadb11,dadb12,dadb13,dadb14,dadb15,dadb16,dadb17;
+        var blocksToolbar = [{
+            'code': 'K30',
+            'value': 30
+        }, {
+            'code': 'K60',
+            'value': 60
+        }, {
+            'code': 'K120',
+            'value': 120
+        }];
+
+        var blocksToolbar2 = [{
+            'code': 'S30',
+            'value': 30
+        }, {
+            'code': 'S60',
+            'value': 60
+        }, {
+            'code': 'S120',
+            'value': 120
+        }];
+
+        function f1() {
+            //console.log(1)
+        };
+
+        function f3() {
+            //console.log(3)
+        };
+
+        function f5() {
+            //console.log(5)
+        };
+
+        function f7() {
+            //console.log(7)
+        };
+        function fx() {
+            //console.log('x')
+        };
+
+        $(function() {
+
+            // inicialization - test from APEX (string insted of objects)
+            dadb1 = new Dadb('dadb1', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1","openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar) + '}');
+            dadb1.setOnChangeCallback(f1);
+            dadb1.addBlocks('[{"blockId":"123", "start":420, "value":60, "rangeId":"100", "backgroundColor":"#ff7c34"}]');
+
+
+            dadb3 = new Dadb('dadb3', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]], "blocksToolbar":' + JSON.stringify(blocksToolbar2) + '}');
+            //dadb3.addBlocks('[{"blockId":"333", "start":720, "value":15,"rangeId":"210", "backgroundColor":"#ff7c34"}]');
+            dadb3.setOnChangeCallback(f3);
+
+            dadb5 = new Dadb('dadb5', '{"min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb5.setOnChangeCallback(f5);
+
+            dadb7 = new Dadb('dadb7', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb7.setOnChangeCallback(f7);
+
+
+            dadb8 = new Dadb('dadb8', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb8.setOnChangeCallback(fx);
+            dadb9 = new Dadb('dadb9', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb9.setOnChangeCallback(fx);
+            dadb10 = new Dadb('dadb10', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb10.setOnChangeCallback(fx);
+            dadb11 = new Dadb('dadb11', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb11.setOnChangeCallback(fx);
+            dadb12 = new Dadb('dadb12', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb12.setOnChangeCallback(fx);
+            dadb13 = new Dadb('dadb13', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb13.setOnChangeCallback(fx);
+            dadb14 = new Dadb('dadb14', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb14.setOnChangeCallback(fx);
+            dadb15 = new Dadb('dadb15', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb15.setOnChangeCallback(fx);
+            dadb16 = new Dadb('dadb16', '{"class":"KID","min":0,"max":1440,"step":15,"toolbarId":"tolbar1", "openBlocks":[[0,1440]]}');
+            dadb16.setOnChangeCallback(fx);
+            dadb17 = new Dadb('dadb17', '{"class":"STAFF","min":0,"max":1440,"step":15,"toolbarId":"tolbar2", "openBlocks":[[0,1440]]}');
+            dadb17.setOnChangeCallback(fx);
+        });</script>

@@ -1,7 +1,6 @@
 'use strict';
 
 var gDadb = {
-    mode: '',
     dragDiv: '',
     lastX: 0,
     lastY: 0,
@@ -160,7 +159,7 @@ var gDadb = {
             }
             for (var i = 0; i < blocksArray.length; i++) {
                 var block = $('<div/>', {
-                    'id': 'block' + blocksArray[i].value,
+                    'id': 'block' + blocksArray[i].code,
                     'class': 'DadbDraggableBlock DadbTemplate',
                     'data-value': blocksArray[i].value,
                     'data-parentId': parentId,
@@ -202,7 +201,6 @@ var gDadb = {
             if (!div) {
                 return;
             }
-
 
             // take the properties of the overed element
             var blockDataValue;
@@ -294,8 +292,6 @@ var gDadb = {
             $('div.DadbDraggableBlock').removeClass('Stamp');
             //unbing the click from the block's range
             $('.DadbSteps .DadbStep').unbind('click mouseup');
-            //
-            $('body').removeClass('unselectable');
         }
 
         //
@@ -311,6 +307,72 @@ var gDadb = {
                 }
             });
 
+            // take/switch blocks using the keybord
+            $(document).unbind('keydown').keydown(function(e) {
+                // < 37 39 >
+                var key = e.keyCode;
+                if (key === 37 || key === 39) {
+                    var element, currentBlockId;
+                    currentBlockId = $(gDadb.dragDiv).attr('id');
+                    if (currentBlockId === 'blockK15') {
+                        if (key === 39) {
+                            element = '#blockK30';
+                        } else {
+                            element = '#blockS120';
+                        }
+                    } else if (currentBlockId === 'blockK30') {
+                        if (key === 39) {
+                            element = '#blockK60';
+                        } else {
+                            element = '#blockK15';
+                        }
+                    } else if (currentBlockId === 'blockK60') {
+                        if (key === 39) {
+                            element = '#blockK120';
+                        } else {
+                            element = '#blockK30';
+                        }
+                    } else if (currentBlockId === 'blockK120') {
+                        if (key === 39) {
+                            element = '#blockS15';
+                        } else {
+                            element = '#blockK60';
+                        }
+                    } else if (currentBlockId === 'blockS15') {
+                        if (key === 39) {
+                            element = '#blockS30';
+                        } else {
+                            element = '#blockK120';
+                        }
+                    } else if (currentBlockId === 'blockS30') {
+                        if (key === 39) {
+                            element = '#blockS60';
+                        } else {
+                            element = '#blockS15';
+                        }
+                    } else if (currentBlockId === 'blockS60') {
+                        if (key === 39) {
+                            element = '#blockS120';
+                        } else {
+                            element = '#blockS30';
+                        }
+                    } else if (currentBlockId === 'blockS120') {
+                        if (key === 39) {
+                            element = '#blockK15';
+                        } else {
+                            element = '#blockS60';
+                        }
+                    }
+                    //  else {
+                    //     element = '#blockK15';
+                    // }
+                    if (element !== undefined) {
+                        e.pageX = gDadb.lastX;
+                        e.pageY = gDadb.lastY;
+                        _takeBlockFromToolbar(e, element);
+                    }
+                }
+            });
 
             $('#steps_' + parentId + '.DadbSteps .DadbStep').mouseover(function(event) {
                 _onOver(event, gDadb.dragDiv);
@@ -324,16 +386,9 @@ var gDadb = {
                 }
             });
 
-            function _takeBlockFromToolbar(event, mode, element) {
+            function _takeBlockFromToolbar(event, element) {
                 event.stopPropagation(); //important! see below
-                $('body').addClass('unselectable');
-                gDadb.mode = mode;
-                var div;
-                if (mode === 'drag') {
-                    div = $(element).closest('div.DadbDraggableBlock');
-                } else {
-                    div = $(element);
-                }
+                var div = $(element);
                 //
                 _removeHighlight();
                 // set the current mouse possition
@@ -351,9 +406,7 @@ var gDadb = {
                         _stopStampDrag();
                     }
                     // take new stamplowe the select block as a stamp only if it not selected
-                    if (mode === 'stamp') {
-                        div.addClass('Stamp');
-                    }
+                    div.addClass('Stamp');
                     // Start dragging the block
                     $(document).unbind('mousemove').mousemove(_startStampDrag);
                     gDadb.dragDiv = div.clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
@@ -361,22 +414,13 @@ var gDadb = {
                     _startStampDrag();
 
                     // add click on time range
-                    if (mode === 'drag') {
-                        $(document).unbind('click mouseup', _addClickOnToPutBlock).mouseup(_addClickOnToPutBlock);
-                    } else {
-                        $(document).unbind('click mouseup', _addClickOnToPutBlock).click(_addClickOnToPutBlock);
-                    }
+                    $(document).unbind('click mouseup', _addClickOnToPutBlock).click(_addClickOnToPutBlock);
                 }
             }
 
-            // when drag via mouse up and mouse down
-            $('div.DadbDraggableBlock span i.DadbHandle').unbind('mousedown').bind('mousedown', function(e) {
-                _takeBlockFromToolbar(e, 'drag', this);
-            });
-
             // when click on block in blocks toolbar - take the block as a stamp
             $('div.DadbDraggableBlock').unbind('click').click(function(e) {
-                _takeBlockFromToolbar(e, 'stamp', this);
+                _takeBlockFromToolbar(e, this);
             });
         }
 
@@ -395,10 +439,6 @@ var gDadb = {
                     }
                 }
                 _removeHighlight();
-                //remove stamp in drag mode
-                if (gDadb.mode === 'drag') {
-                    _stopStampDrag();
-                }
             }
         }
         //STAMP END
@@ -615,66 +655,3 @@ var gDadb = {
     };
 
 })(window, jQuery);
-
-
-// special functionality for IE8
-// $(function() {
-//     // to have indexOf working on an array in IE8
-//     if (!Array.prototype.indexOf) {
-//         Array.prototype.indexOf = function(obj, start) {
-//             for (var i = (start || 0), j = this.length; i < j; i++) {
-//                 if (this[i] === obj) {
-//                     return i;
-//                 }
-//             }
-//             return -1;
-//         };
-//     }
-//
-//     // to have jQuery forEach in IE8
-//     if (typeof Array.prototype.forEach !== 'function') {
-//         Array.prototype.forEach = function(callback) {
-//             for (var i = 0; i < this.length; i++) {
-//                 callback.apply(this, [this[i], i, this]);
-//             }
-//         };
-//     }
-//     // to have info/status on revert
-//     // http://stackoverflow.com/questions/1853230/jquery-ui-draggable-event-status-on-revert
-//     $.ui.draggable.prototype._mouseStop = function(event) {
-//         //If we are using droppables, inform the manager about the drop
-//         var dropped = false;
-//         if ($.ui.ddmanager && !this.options.dropBehaviour) {
-//             dropped = $.ui.ddmanager.drop(this, event);
-//         }
-//
-//         //if a drop comes from outside (a sortable)
-//         if (this.dropped) {
-//             dropped = this.dropped;
-//             this.dropped = false;
-//         }
-//
-//         if ((this.options.revert === 'invalid' && !dropped) ||
-//             (this.options.revert === 'valid' && dropped) || this.options.revert === true ||
-//             ($.isFunction(this.options.revert) && this.options.revert.call(this.element, dropped))) {
-//             var self = this;
-//             self._trigger('reverting', event);
-//             $(this.helper).animate(this.originalPosition, parseInt(this.options.revertDuration, 10), function() {
-//                 event.reverted = true;
-//                 self._trigger('stop', event);
-//                 self._clear();
-//             });
-//         } else {
-//             this._trigger('stop', event);
-//             this._clear();
-//         }
-//         return false;
-//     };
-//     //version
-//     // $(document.body).append('<div id="version">v Alfa4</div>');
-//     // $('#version').css({
-//     // 	'bottom': '0',
-//     // 	'right': '0',
-//     // 	'position': 'fixed'
-//     // });
-// });

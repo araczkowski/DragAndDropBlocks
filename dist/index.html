@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class=no-js><head><meta charset=utf-8><title>DragAndDropBlocks</title><meta name=description content=""><meta name=viewport content="width=device-width"><link rel="shortcut icon" href=/088e5133.favicon.ico><!-- like in apex--><link href=//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css rel=stylesheet><link rel=stylesheet href=styles/25d883da.vendor.css><link rel=stylesheet href=styles/ec4161d5.main.css><style>div.typeKid div.DadbStepContent {
+<!DOCTYPE html><html class=no-js><head><meta charset=utf-8><title>DragAndDropBlocks</title><meta name=description content=""><meta name=viewport content="width=device-width"><link rel="shortcut icon" href=/088e5133.favicon.ico><!-- like in apex--><link href=//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css rel=stylesheet><link rel=stylesheet href=styles/25d883da.vendor.css><link rel=stylesheet href=styles/1ce3ccdb.main.css><style>div.typeKid div.DadbStepContent {
             background: #ffd6b8;
             opacity: 0.6;
         }
@@ -54,11 +54,32 @@
             margin-left: 10px;
             margin-bottom: 20px;
             padding-bottom: 26px;
-        }</style><body><!-- <a href="javascript:addNew();">test</a> --><div id=info style="font-size: small"><p>you can work in 2 modes now:<br><li><strong>drag&drop mode</strong> - move the draggable block by clicking with the mouse on the arrows <i class="fa fa-arrows" aria-hidden=true></i> and dragging it to the empty space on the time range..</li><li><strong>click mode</strong> - select the block by clicking with the mouse on it and navigate to the empty space on the time range, now you can put the selected block on the range. You can do this put many times - you can use it as a stamp. Use the escape kay to remove the selected block or click again on the selected block, or click on the block's toolbar to drop it, or click on anather block to change the selection etc..</li></p></div><div id=root_parent class=DadbContent><div id=models style="overflow: auto; width: 1200px; margin-right: 20px; padding-top: 20px"><p>Day 1</p><div class="typeKid dadbDay" id=dadb1></div><div class="typeStaff dadbDay" id=dadb3></div><p>Day 2</p><div class="typeKid dadbDay" id=dadb5></div><div class="typeStaff dadbDay" id=dadb7></div><p>Day 3</p><div class="typeKid dadbDay" id=dadb8></div><div class="typeStaff dadbDay" id=dadb9></div><p>Day 4</p><div class="typeKid dadbDay" id=dadb10></div><div class="typeStaff dadbDay" id=dadb11></div><p>Day 5</p><div class="typeKid dadbDay" id=dadb12></div><div class="typeStaff dadbDay" id=dadb13></div><p>Day 6</p><div class="typeKid dadbDay" id=dadb14></div><div class="typeStaff dadbDay" id=dadb15></div><p>Day 7</p><div class="typeKid dadbDay" id=dadb16></div><div class="typeStaff dadbDay" id=dadb17></div></div><br><br><table><tbody><tr><td><fieldset style="width: 45%; float: left; height: 80px"><legend>Kids:</legend><div id=tolbar1></div></fieldset><fieldset style="width: 45%; float: left; height: 80px"><legend>Staff:</legend><div id=tolbar2></div></fieldset><tr></table></div><script src=scripts/67dd0b65.vendor.js></script><script src=scripts/29a3dee8.main.js></script><script>var dadb1;
+        }</style><body><!-- <a href="javascript:addNew();">test</a> --><div id=info style="font-size: small"><p>you can work in 2 modes now:<br><li><strong>drag&drop mode</strong> - move the draggable block by clicking with the mouse on the arrows <i class="fa fa-arrows" aria-hidden=true></i> and dragging it to the empty space on the time range..</li><li><strong>click mode</strong> - select the block by clicking with the mouse on it and navigate to the empty space on the time range, now you can put the selected block on the range. You can do this put many times - you can use it as a stamp. Use the escape kay to remove the selected block or click again on the selected block, or click on the block's toolbar to drop it, or click on anather block to change the selection etc..</li></p></div><div id=root_parent class=DadbContent><div id=models style="overflow: auto; width: 1200px; margin-right: 20px; padding-top: 20px"><p>Day 1</p><div class="typeKid dadbDay" id=dadb1></div><div class="typeStaff dadbDay" id=dadb3></div><p>Day 2</p><div class="typeKid dadbDay" id=dadb5></div><div class="typeStaff dadbDay" id=dadb7></div><!-- <p>Day 3</p>
+            <div class="typeKid dadbDay" id="dadb8"></div>
+            <div class="typeStaff dadbDay" id="dadb9"></div>
+
+            <p>Day 4</p>
+            <div class="typeKid dadbDay" id="dadb10"></div>
+            <div class="typeStaff dadbDay" id="dadb11"></div>
+
+            <p>Day 5</p>
+            <div class="typeKid dadbDay" id="dadb12"></div>
+            <div class="typeStaff dadbDay" id="dadb13"></div>
+
+            <p>Day 6</p>
+            <div class="typeKid dadbDay" id="dadb14"></div>
+            <div class="typeStaff dadbDay" id="dadb15"></div>
+
+            <p>Day 7</p>
+            <div class="typeKid dadbDay" id="dadb16"></div>
+            <div class="typeStaff dadbDay" id="dadb17"></div> --></div><br><br><table><tbody><tr><td><fieldset style="width: 45%; float: left; height: 80px"><legend>Kids:</legend><div id=tolbar1></div></fieldset><fieldset style="width: 45%; float: left; height: 80px"><legend>Staff:</legend><div id=tolbar2></div></fieldset><tr></table></div><script src=scripts/67dd0b65.vendor.js></script><script src=scripts/38f1e629.main.js></script><script>var dadb1;
         var dadb3;
         var dadb5;
         var dadb6,dadb7,dadb8,dadb9,dadb10,dadb11,dadb12,dadb13,dadb14,dadb15,dadb16,dadb17;
         var blocksToolbar = [{
+            'code': 'K15',
+            'value': 15
+        }, {
             'code': 'K30',
             'value': 30
         }, {
@@ -70,6 +91,9 @@
         }];
 
         var blocksToolbar2 = [{
+            'code': 'S15',
+            'value': 15
+        },{
             'code': 'S30',
             'value': 30
         }, {

@@ -314,57 +314,57 @@ var gDadb = {
                 if (key === 37 || key === 39) {
                     var element, currentBlockId;
                     currentBlockId = $(gDadb.dragDiv).attr('id');
-                    if (currentBlockId === 'blockK15') {
+                    if (currentBlockId === 'blockKID15') {
                         if (key === 39) {
-                            element = '#blockK30';
+                            element = '#blockKID30';
                         } else {
-                            element = '#blockS120';
+                            element = '#blockSTAFF120';
                         }
-                    } else if (currentBlockId === 'blockK30') {
+                    } else if (currentBlockId === 'blockKID30') {
                         if (key === 39) {
-                            element = '#blockK60';
+                            element = '#blockKID60';
                         } else {
-                            element = '#blockK15';
+                            element = '#blockKID15';
                         }
-                    } else if (currentBlockId === 'blockK60') {
+                    } else if (currentBlockId === 'blockKID60') {
                         if (key === 39) {
-                            element = '#blockK120';
+                            element = '#blockKID120';
                         } else {
-                            element = '#blockK30';
+                            element = '#blockKID30';
                         }
-                    } else if (currentBlockId === 'blockK120') {
+                    } else if (currentBlockId === 'blockKID120') {
                         if (key === 39) {
-                            element = '#blockS15';
+                            element = '#blockSTAFF15';
                         } else {
-                            element = '#blockK60';
+                            element = '#blockKID60';
                         }
-                    } else if (currentBlockId === 'blockS15') {
+                    } else if (currentBlockId === 'blockSTAFF15') {
                         if (key === 39) {
-                            element = '#blockS30';
+                            element = '#blockSTAFF30';
                         } else {
-                            element = '#blockK120';
+                            element = '#blockKID120';
                         }
-                    } else if (currentBlockId === 'blockS30') {
+                    } else if (currentBlockId === 'blockSTAFF30') {
                         if (key === 39) {
-                            element = '#blockS60';
+                            element = '#blockSTAFF60';
                         } else {
-                            element = '#blockS15';
+                            element = '#blockSTAFF15';
                         }
-                    } else if (currentBlockId === 'blockS60') {
+                    } else if (currentBlockId === 'blockSTAFF60') {
                         if (key === 39) {
-                            element = '#blockS120';
+                            element = '#blockSTAFF120';
                         } else {
-                            element = '#blockS30';
+                            element = '#blockSTAFF30';
                         }
-                    } else if (currentBlockId === 'blockS120') {
+                    } else if (currentBlockId === 'blockSTAFF120') {
                         if (key === 39) {
-                            element = '#blockK15';
+                            element = '#blockKID15';
                         } else {
-                            element = '#blockS60';
+                            element = '#blockSTAFF60';
                         }
                     }
                     //  else {
-                    //     element = '#blockK15';
+                    //     element = '#blockKID15';
                     // }
                     if (element !== undefined) {
                         e.pageX = gDadb.lastX;

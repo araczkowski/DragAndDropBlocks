@@ -58,6 +58,9 @@ var gDadb = {
             _build();
             _createBlocksToolbar();
             _openBlocks();
+
+            // to have the current position of the mouse
+            $(document).unbind('mousemove').mousemove(_startStampDrag);
         }
 
 
@@ -154,8 +157,9 @@ var gDadb = {
         function _addBlocksToTolbar(selector, blocksArray) {
             var eBlocks = $(selector);
             var html;
+
             if (!_options.readOnly) {
-                html = '<span> <i class = "DadbHandle fa fa-arrows"></i></span>';
+                html = '<span> <i class = "DadbHandle"></i></span>';
             }
             for (var i = 0; i < blocksArray.length; i++) {
                 var block = $('<div/>', {
@@ -164,7 +168,7 @@ var gDadb = {
                     'data-value': blocksArray[i].value,
                     'data-parentId': parentId,
                     'data-toolbarId': _options.toolbarId,
-                    'html': html,
+                    'html': html.replace('></i>', '>' + blocksArray[i].label + '</i>')
                 }).appendTo(eBlocks);
 
                 var backgroundColor;
@@ -271,7 +275,6 @@ var gDadb = {
                 gDadb.lastX = e.pageX;
                 gDadb.lastY = e.pageY;
             }
-
             // If an element is being dragged, update the helper's position.
             if (gDadb.dragDiv) {
                 gDadb.dragDiv.css({
@@ -309,63 +312,83 @@ var gDadb = {
 
             // take/switch blocks using the keybord
             $(document).unbind('keydown').keydown(function(e) {
-                // < 37 39 >
+                // <-- 37 39 -->
+                // p 80 n 78
+                $('#info').click();
                 var key = e.keyCode;
-                if (key === 37 || key === 39) {
+                if (key === 80 || key === 78 || (key > 48 && key < 57)) {
                     var element, currentBlockId;
                     currentBlockId = $(gDadb.dragDiv).attr('id');
-                    if (currentBlockId === 'blockKID15') {
-                        if (key === 39) {
-                            element = '#blockKID30';
-                        } else {
-                            element = '#blockSTAFF120';
-                        }
-                    } else if (currentBlockId === 'blockKID30') {
-                        if (key === 39) {
-                            element = '#blockKID60';
-                        } else {
-                            element = '#blockKID15';
-                        }
-                    } else if (currentBlockId === 'blockKID60') {
-                        if (key === 39) {
-                            element = '#blockKID120';
-                        } else {
-                            element = '#blockKID30';
-                        }
-                    } else if (currentBlockId === 'blockKID120') {
-                        if (key === 39) {
-                            element = '#blockSTAFF15';
-                        } else {
-                            element = '#blockKID60';
-                        }
-                    } else if (currentBlockId === 'blockSTAFF15') {
-                        if (key === 39) {
-                            element = '#blockSTAFF30';
-                        } else {
-                            element = '#blockKID120';
-                        }
-                    } else if (currentBlockId === 'blockSTAFF30') {
-                        if (key === 39) {
-                            element = '#blockSTAFF60';
-                        } else {
-                            element = '#blockSTAFF15';
-                        }
-                    } else if (currentBlockId === 'blockSTAFF60') {
-                        if (key === 39) {
-                            element = '#blockSTAFF120';
-                        } else {
-                            element = '#blockSTAFF30';
-                        }
-                    } else if (currentBlockId === 'blockSTAFF120') {
-                        if (key === 39) {
-                            element = '#blockKID15';
-                        } else {
-                            element = '#blockSTAFF60';
+                    if (key === 49) {
+                        element = '#blockKID15';
+                    } else if (key === 50) {
+                        element = '#blockKID30';
+                    } else if (key === 51) {
+                        element = '#blockKID60';
+                    } else if (key === 52) {
+                        element = '#blockKID120';
+                    } else if (key === 53) {
+                        element = '#blockSTAFF15';
+                    } else if (key === 54) {
+                        element = '#blockSTAFF30';
+                    } else if (key === 55) {
+                        element = '#blockSTAFF60';
+                    } else if (key === 56) {
+                        element = '#blockSTAFF120';
+                    }
+
+                    if (key === 80 || key === 78) {
+                        if (currentBlockId === 'blockKID15') {
+                            if (key === 78) {
+                                element = '#blockKID30';
+                            } else {
+                                element = '#blockSTAFF120';
+                            }
+                        } else if (currentBlockId === 'blockKID30') {
+                            if (key === 78) {
+                                element = '#blockKID60';
+                            } else {
+                                element = '#blockKID15';
+                            }
+                        } else if (currentBlockId === 'blockKID60') {
+                            if (key === 78) {
+                                element = '#blockKID120';
+                            } else {
+                                element = '#blockKID30';
+                            }
+                        } else if (currentBlockId === 'blockKID120') {
+                            if (key === 78) {
+                                element = '#blockSTAFF15';
+                            } else {
+                                element = '#blockKID60';
+                            }
+                        } else if (currentBlockId === 'blockSTAFF15') {
+                            if (key === 78) {
+                                element = '#blockSTAFF30';
+                            } else {
+                                element = '#blockKID120';
+                            }
+                        } else if (currentBlockId === 'blockSTAFF30') {
+                            if (key === 78) {
+                                element = '#blockSTAFF60';
+                            } else {
+                                element = '#blockSTAFF15';
+                            }
+                        } else if (currentBlockId === 'blockSTAFF60') {
+                            if (key === 78) {
+                                element = '#blockSTAFF120';
+                            } else {
+                                element = '#blockSTAFF30';
+                            }
+                        } else if (currentBlockId === 'blockSTAFF120') {
+                            if (key === 78) {
+                                element = '#blockKID15';
+                            } else {
+                                element = '#blockSTAFF60';
+                            }
                         }
                     }
-                    //  else {
-                    //     element = '#blockKID15';
-                    // }
+
                     if (element !== undefined) {
                         e.pageX = gDadb.lastX;
                         e.pageY = gDadb.lastY;
@@ -408,7 +431,7 @@ var gDadb = {
                     // take new stamplowe the select block as a stamp only if it not selected
                     div.addClass('Stamp');
                     // Start dragging the block
-                    $(document).unbind('mousemove').mousemove(_startStampDrag);
+                    //$(document).unbind('mousemove').mousemove(_startStampDrag);
                     gDadb.dragDiv = div.clone().addClass('FlyingStamp').css('position', 'absolute').appendTo('body');
                     // Fire the dragging event to update the helper's position
                     _startStampDrag();

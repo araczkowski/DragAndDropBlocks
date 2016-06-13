@@ -136,8 +136,11 @@ div.DadbDraggableBlock.Stamp {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+div.DadbDraggableBlock {
+    cursor: pointer;
+}
 div.DadbDraggableBlock .DadbHandle {
-    cursor: move;
+    font-size: 1.4em;
 }
 .DadbStepContent .DadbHandle {
     cursor: pointer;

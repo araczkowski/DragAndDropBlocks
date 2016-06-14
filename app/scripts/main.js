@@ -43,7 +43,7 @@ var gDadb = {
             attToolbarId: [],
             blocksToolbar: [],
             openBlocks: [],
-            readOnly: false
+            readOnly: true
         };
 
         var _onAddBlock = null,
@@ -156,7 +156,7 @@ var gDadb = {
 
         function _addBlocksToTolbar(selector, blocksArray) {
             var eBlocks = $(selector);
-            var html;
+            var html = '';
 
             if (!_options.readOnly) {
                 html = '<span> <i class = "DadbHandle"></i></span>';

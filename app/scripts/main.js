@@ -43,7 +43,7 @@ var gDadb = {
             attToolbarId: [],
             blocksToolbar: [],
             openBlocks: [],
-            readOnly: true
+            readOnly: false
         };
 
         var _onAddBlock = null,
@@ -314,26 +314,26 @@ var gDadb = {
             $(document).unbind('keydown').keydown(function(e) {
                 // <-- 37 39 -->
                 // p 80 n 78
-                $('#info').click();
                 var key = e.keyCode;
-                if (key === 80 || key === 78 || (key > 48 && key < 57)) {
+                if (key === 80 || key === 78 || (key > 48 && key < 57) ||
+                    (key > 96 && key < 105)) {
                     var element, currentBlockId;
                     currentBlockId = $(gDadb.dragDiv).attr('id');
-                    if (key === 49) {
+                    if (key === 49 || key === 97) {
                         element = '#blockKID15';
-                    } else if (key === 50) {
+                    } else if (key === 50 || key === 98) {
                         element = '#blockKID30';
-                    } else if (key === 51) {
+                    } else if (key === 51 || key === 99) {
                         element = '#blockKID60';
-                    } else if (key === 52) {
+                    } else if (key === 52 || key === 100) {
                         element = '#blockKID120';
-                    } else if (key === 53) {
+                    } else if (key === 53 || key === 101) {
                         element = '#blockSTAFF15';
-                    } else if (key === 54) {
+                    } else if (key === 54 || key === 102) {
                         element = '#blockSTAFF30';
-                    } else if (key === 55) {
+                    } else if (key === 55 || key === 103) {
                         element = '#blockSTAFF60';
-                    } else if (key === 56) {
+                    } else if (key === 56 || key === 104) {
                         element = '#blockSTAFF120';
                     }
 
